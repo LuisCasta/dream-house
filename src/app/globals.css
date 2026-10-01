@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Paleta tomada de las portadas de Dream House en redes:
+     cielo azul noche, letras crema, detalles dorados, casas en hora dorada. */
+  --color-hueso: #faf6ee;
+  --color-arena: #f1e9da;
+  --color-piedra: #ddd1bc;
+  --color-gris: #67645f;
+  --color-noche: #15213b;
+  --color-noche-2: #22335a;
+  --color-madera: #8a5c3c;
+  --color-oro: #c9a462;
+  --color-oro-claro: #dcbf86;
+  --color-oro-oscuro: #8a6526;
+  --color-linea: #e7dece;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair);
+  --font-romana: var(--font-cinzel);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-hueso);
+  color: var(--color-noche);
+}
+
+::selection {
+  background: var(--color-oro);
+  color: var(--color-noche);
+}
+
+/* Carruseles horizontales tipo "fila" */
+.fila {
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.fila::-webkit-scrollbar {
+  display: none;
+}
+.fila > * {
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
