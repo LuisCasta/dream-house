@@ -1,27 +1,34 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Logo from "@/components/Logo";
-import { IconoAtras, IconoCandado } from "@/components/Iconos";
-
-export const metadata: Metadata = { title: "Pago", robots: { index: false } };
-
-// Checkout sin navegación ni distracciones.
-export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
+import Link from "next/link";
+export const metadata: Metadata = {
+  title: "Compra de demostración",
+  robots: { index: false },
+};
+export default function CheckoutLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
-      <header className="border-b border-linea bg-hueso">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:px-8">
-          <Link href="/planos" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-arena sm:hidden" aria-label="Volver">
-            <IconoAtras className="h-5 w-5" />
-          </Link>
+      <header className="cabecera">
+        <div className="ancho flex min-h-20 items-center justify-between">
           <Logo />
-          <span className="flex items-center gap-1.5 text-xs text-gris">
-            <IconoCandado className="h-4 w-4" />
-            <span className="hidden sm:inline">Pago seguro</span>
-          </span>
+          <span className="text-xs text-gris">Compra de demostración</span>
         </div>
       </header>
-      <main className="flex-1 pb-16">{children}</main>
+      <main className="flex-1">{children}</main>
+      <footer className="pie">
+        <div className="ancho py-6 text-center text-sm">
+          <Link href="/ayuda" className="enlace">
+            ¿Necesitas ayuda?
+          </Link>
+          <p className="nota mt-3">
+            Sin cobros, correos ni entrega de planos reales.
+          </p>
+        </div>
+      </footer>
     </>
   );
 }

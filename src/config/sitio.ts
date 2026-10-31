@@ -48,5 +48,6 @@ export const GARANTIAS = {
 };
 
 export function enlaceWhatsApp(mensaje: string) {
+  if (CONTACTO.pendiente) return "/contacto/";
   return `https://wa.me/${CONTACTO.whatsapp}?text=${encodeURIComponent(mensaje)}`;
 }

@@ -1,151 +1,215 @@
 "use client";
-
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { SERVICIOS } from "@/data/contenido";
-import { entregablesDe, obtenerProyecto } from "@/data/proyectos";
-import { track } from "@/lib/analytics";
-import { vaciarCarrito } from "@/lib/carrito";
-import { entrega, type EnlaceDescarga } from "@/lib/entrega";
-import type { Orden } from "@/lib/pagos";
+import { useState, useSyncExternalStore } from "react";
+import { obtenerProyecto } from "@/data/proyectos";
+import { venta } from "@/data/venta";
+import { leerDemo } from "@/lib/demo";
+import { checkoutUrl, recurso } from "@/lib/rutas";
 import { precio } from "@/lib/formato";
-import { useMontado } from "@/lib/useMontado";
-import { IconoCheck, IconoDescarga, IconoDocumento, IconoFlecha } from "../Iconos";
-import { claseBoton } from "../ui";
+import ImagenVenta from "../proyecto/ImagenVenta";
 
-function leerOrden(id: string | null): Orden | null {
-  if (!id) return null;
-  try {
-    const v = sessionStorage.getItem(`dh_orden_${id}`);
-    return v ? JSON.parse(v) : null;
-  } catch {
-    return null;
-  }
-}
-
+const suscribir = () => () => {};
 export default function Confirmacion() {
   const params = useSearchParams();
-  const ordenId = params.get("orden");
-  const demo = params.get("demo") === "1";
-  const montado = useMontado();
-  const orden = useMemo(() => (montado ? leerOrden(ordenId) : undefined), [montado, ordenId]);
-  const [enlaces, setEnlaces] = useState<EnlaceDescarga[] | null>(null);
-  const registrado = useRef(false);
-
-  useEffect(() => {
-    const o = orden;
-    if (!o || registrado.current) return;
-    registrado.current = true;
-    vaciarCarrito();
-    track("purchase", { orden: o.id, valor: o.total, moneda: "MXN", proyectos: o.items.map((i) => i.slug), metodo: o.metodo, demo });
-    entrega.enlacesDeDescarga(o.id).then(setEnlaces);
-  }, [orden, demo]);
-
-  if (orden === undefined) return <div className="min-h-[60vh]" />;
-
-  if (!orden) {
+  const id = params.get("orden") || "";
+  const montado = useSyncExternalStore(
+    suscribir,
+    () => true,
+    () => false,
+  );
+  const pedido = montado ? leerDemo(id) : null;
+  const p = pedido ? obtenerProyecto(pedido.slug) : null;
+  const [feedback, setFeedback] = useState("");
+  const [descargando, setDescargando] = useState(false);
+  if (!montado)
     return (
-      <div className="mx-auto max-w-md px-5 py-24 text-center">
-        <p className="font-display text-4xl tracking-tight">No encontramos tu orden</p>
-        <p className="mt-3 text-gris">Revisa el correo con el que compraste: ahí están tus enlaces de descarga.</p>
-        <Link href="/contacto" className={`${claseBoton()} mt-8`}>Contactar soporte</Link>
+      <div className="ancho py-16" role="status">
+        Cargando simulación…
       </div>
     );
-  }
-
-  const proyectos = orden.items.map((i) => ({ ...i, p: obtenerProyecto(i.slug)! })).filter((i) => i.p);
-  const principal = proyectos[0]?.p;
-
-  return (
-    <div className="mx-auto max-w-2xl px-5 pt-10 sm:px-8 sm:pt-16">
-      {demo && (
-        <p className="mb-8 rounded-xl bg-amber-100 px-4 py-3 text-sm text-amber-900">
-          Compra de demostración: no se realizó ningún cargo.
+  if (!pedido || !p)
+    return (
+      <div className="ancho estado-vacio">
+        <div className="estado-icono">!</div>
+        <h1 className="titulo-pagina">No encontramos esta simulación.</h1>
+        <p className="text-gris my-5">
+          El pedido demo solo está disponible en la sesión donde se creó. Este
+          enlace no acredita una compra.
         </p>
-      )}
-
-      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e5ebdd] text-[#4d6340]">
-        <IconoCheck className="h-7 w-7" />
-      </span>
-      <h1 className="mt-6 font-display text-5xl leading-none tracking-tight">
-        Listo, {orden.comprador.nombre.split(" ")[0]}.
-        <br />
-        <em className="text-oro-oscuro">Tu proyecto ya es tuyo.</em>
-      </h1>
-      <p className="mt-4 text-gris">
-        Orden <span className="tabular-nums">{orden.id}</span> · {precio(orden.total)}. Enviamos una copia de tus enlaces a <strong className="font-medium text-noche">{orden.comprador.email}</strong>.
-      </p>
-
-      {/* Descargas */}
-      {proyectos.map(({ p, paquete }) => (
-        <section key={p.slug} className="mt-10 rounded-3xl border border-linea bg-white p-5 sm:p-6">
-          <p className="font-display text-2xl">{p.nombre}</p>
-          <ul className="mt-4 divide-y divide-linea">
-            {entregablesDe(p, paquete).map((e) => {
-              const enlace = enlaces?.find((x) => x.entregable === e.id);
-              return (
-                <li key={e.id} className="flex items-center gap-3 py-3">
-                  <IconoDocumento formato={e.formato} className="h-10 w-8 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium">{e.nombre}</p>
-                    <p className="text-xs text-gris">{e.formato}</p>
+        <Link href="/planos" className="boton">
+          Volver al catálogo
+        </Link>
+        <Link href="/recuperar" className="enlace block mt-5">
+          Recuperar mis archivos
+        </Link>
+      </div>
+    );
+  const aprobado = pedido.escenario === "aprobado";
+  const pendiente = pedido.escenario === "pendiente";
+  async function descargar() {
+    if (descargando) return;
+    setDescargando(true);
+    setFeedback("");
+    try {
+      const respuesta = await fetch(recurso("/demo/muestra-dreamhouse.zip"));
+      if (!respuesta.ok) throw new Error("descarga");
+      const blob = await respuesta.blob();
+      const cabecera = new Uint8Array(await blob.slice(0, 2).arrayBuffer());
+      if (cabecera[0] !== 80 || cabecera[1] !== 75) throw new Error("archivo");
+      const url = URL.createObjectURL(blob);
+      const enlace = document.createElement("a");
+      enlace.href = url;
+      enlace.download = "Dream-House-MUESTRA-DEMO.zip";
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setFeedback(
+        "Muestra preparada. El ZIP contiene únicamente un README de demostración, sin planos.",
+      );
+    } catch {
+      setFeedback(
+        "No se pudo descargar la muestra. Inténtalo de nuevo o consulta Ayuda. No se ha entregado ningún plano.",
+      );
+    } finally {
+      setDescargando(false);
+    }
+  }
+  return (
+    <div className={`ancho resultado ${pedido.escenario}`}>
+      <div className="resultado-titulo">
+        <div className="estado-icono" aria-hidden>
+          {aprobado ? "✓" : pendiente ? "◷" : "!"}
+        </div>
+        <p className="sobrelinea">SIMULACIÓN · SIN COBRO REAL</p>
+        <h1 className="titulo-pagina">
+          {aprobado
+            ? "Pago simulado aprobado"
+            : pendiente
+              ? "Pago simulado pendiente"
+              : "El pago simulado no se completó"}
+        </h1>
+        <p className="text-gris mt-4">
+          {aprobado
+            ? "Conoce cómo será la entrega digital de tu proyecto."
+            : pendiente
+              ? "Este escenario sigue a la espera de confirmación."
+              : "Vuelve al formulario y elige otro escenario de prueba."}
+        </p>
+      </div>
+      <div className="resultado-grid">
+        <section className="panel pedido-resumen">
+          <ImagenVenta p={p} />
+          <div>
+            <h2 className="font-display text-3xl">{p.nombre}</h2>
+            <p className="nota mt-3 break-all">
+              Pedido {pedido.id} · Demostración
+            </p>
+            <p className="text-sm mt-4">{p.paquetes[0].nombre}</p>
+            <p className="nota mt-5">Total simulado</p>
+            <p className="precio-resumen">{precio(p.paquetes[0].precio)}</p>
+          </div>
+        </section>
+        <section className="panel acciones-resultado">
+          {aprobado ? (
+            <>
+              <button
+                className="boton w-full"
+                onClick={descargar}
+                disabled={descargando}
+              >
+                {descargando ? "Preparando muestra…" : "↓ Descargar muestra"}
+              </button>
+              <p className="nota mt-3">
+                Solo un README de ejemplo. No contiene planos ni archivos del
+                proyecto.
+              </p>
+              <div className="formatos">
+                {venta(p).entregables.map((e) => (
+                  <div key={e.id}>
+                    <strong>{e.formato}</strong>
+                    <span>{e.nombre}</span>
                   </div>
-                  {enlace ? (
-                    <a href={enlace.url} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-noche px-4 text-sm text-hueso">
-                      <IconoDescarga /> Descargar
-                    </a>
-                  ) : (
-                    <span className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-linea px-4 text-sm text-gris" title="Disponible al conectar la entrega de archivos">
-                      <IconoDescarga /> Descargar
-                    </span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-          {!enlaces && <p className="mt-2 text-xs text-gris">Las descargas se activarán al conectar el almacenamiento de archivos.</p>}
-        </section>
-      ))}
-
-      {/* Qué sigue */}
-      <section className="mt-12">
-        <h2 className="font-display text-3xl tracking-tight">Qué sigue</h2>
-        <ol className="mt-5 space-y-4">
-          {[
-            ["Descarga tus archivos", "Guárdalos en un lugar seguro."],
-            ["Llévalos con un profesional local", "Para revisarlos con el reglamento de tu municipio y tu terreno."],
-            ["Construye a tu ritmo", "Por etapas o de una vez, como te convenga."],
-          ].map(([t, d], i) => (
-            <li key={t} className="flex gap-4">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arena text-sm font-medium">{i + 1}</span>
-              <div>
-                <p className="font-medium">{t}</p>
-                <p className="text-sm text-gris">{d}</p>
+                ))}
               </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Upsell: después de la compra, nunca antes */}
-      {principal && (
-        <section className="mt-14 rounded-3xl bg-noche p-6 text-hueso sm:p-10">
-          <h2 className="font-display text-4xl leading-tight tracking-tight">¿Quieres adaptar esta casa exactamente a tu terreno?</h2>
-          <p className="mt-3 text-hueso/70">Nuestro equipo puede ajustar {principal.nombre} a tu terreno, tu familia y tu presupuesto.</p>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {SERVICIOS.slice(0, 4).map((s) => (
-              <li key={s.titulo} className="rounded-2xl bg-hueso/5 p-4">
-                <p className="font-medium">{s.titulo}</p>
-                <p className="mt-1 text-sm text-hueso/60">{s.texto}</p>
-              </li>
-            ))}
-          </ul>
-          <Link href={`/adaptar?proyecto=${principal.slug}`} className={`${claseBoton("acento")} mt-8`}>
-            Quiero adaptarla <IconoFlecha />
-          </Link>
+              <p className="nota">
+                Contenido previsto del paquete; pendiente de confirmar y
+                conectar la entrega real.
+              </p>
+            </>
+          ) : pendiente ? (
+            <>
+              <div className="aviso">
+                <strong>La descarga todavía no está habilitada.</strong>
+                <p>
+                  No necesitas pagar de nuevo. Esta simulación permanece
+                  pendiente.
+                </p>
+              </div>
+              <button
+                className="boton w-full mt-5"
+                onClick={() =>
+                  setFeedback(
+                    "Consulta simulada: el estado sigue pendiente. No se consultó una pasarela ni se envió correo.",
+                  )
+                }
+              >
+                Consultar estado
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="aviso">
+                <strong>Escenario de prueba fallido</strong>
+                <p>
+                  Puedes volver conservando esta casa y cambiar el escenario.
+                </p>
+              </div>
+              <Link href={checkoutUrl(p.slug)} className="boton w-full mt-5">
+                Volver al pago
+              </Link>
+            </>
+          )}
+          <p role="status" className="feedback mt-4">
+            {feedback}
+          </p>
         </section>
-      )}
+      </div>
+      <div className="resultado-soporte">
+        {aprobado && (
+          <div>
+            <h2 className="font-medium">
+              El correo también es una simulación.
+            </h2>
+            <p className="nota mt-2">
+              No se ha enviado ningún enlace por correo.
+            </p>
+            <button
+              className="enlace mt-3"
+              onClick={() =>
+                setFeedback("Reenvío simulado. No se envió ningún correo real.")
+              }
+            >
+              Simular reenvío del enlace
+            </button>
+          </div>
+        )}
+        <div>
+          <h2 className="font-medium">¿Necesitas ayuda?</h2>
+          <Link href="/contacto" className="enlace mt-3 inline-block">
+            Contactar soporte
+          </Link>
+          <p className="nota mt-2">Canales de atención por confirmar.</p>
+        </div>
+      </div>
+      <div className="aviso text-center mt-6">
+        Antes de construir, solicita la revisión y adaptación de un profesional
+        local.
+      </div>
+      <Link href="/planos" className="enlace inline-block mt-8">
+        ← Volver al catálogo
+      </Link>
     </div>
   );
 }

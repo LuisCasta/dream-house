@@ -5,6 +5,10 @@
 // Pixel sin tocar este código. Si se prefiere enviarlos directo, hacerlo en `enviar()`.
 
 export type Evento =
+  | "demo_view_project"
+  | "demo_begin_checkout"
+  | "demo_contact"
+  | "demo_payment_result"
   | "view_project"
   | "select_lot_size"
   | "view_floorplan"
@@ -25,7 +29,13 @@ export type Atribucion = {
 
 const CLAVE_PRIMER = "dh_atribucion_primer_toque";
 const CLAVE_ULTIMO = "dh_atribucion_ultimo_toque";
-const UTM = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+const UTM = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+] as const;
 
 declare global {
   interface Window {
@@ -56,7 +66,8 @@ export function capturarAtribucion() {
     const v = params.get(k);
     if (v) a[k] = v;
   }
-  const referrerExterno = document.referrer && !document.referrer.startsWith(location.origin);
+  const referrerExterno =
+    document.referrer && !document.referrer.startsWith(location.origin);
   if (!a.utm_source && !referrerExterno) return;
   a.referrer = document.referrer || undefined;
   a.landing = location.pathname;
@@ -83,11 +94,20 @@ export function vieneDeRedes(params: URLSearchParams) {
 function enviar(evento: Evento, datos: Record<string, unknown>) {
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push({ event: evento, ...datos });
-  if (process.env.NODE_ENV !== "production") console.info("[analytics]", evento, datos);
+  if (process.env.NODE_ENV !== "production")
+    console.info("[analytics]", evento, datos);
 }
 
 export function track(evento: Evento, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
+  if (evento.startsWith("demo_")) {
+    enviar(evento, {
+      proyecto: params.proyecto ?? null,
+      escenario: params.escenario ?? null,
+      demo: true,
+    });
+    return;
+  }
   const { ultimo_toque, primer_toque } = obtenerAtribucion();
   enviar(evento, {
     ...params,

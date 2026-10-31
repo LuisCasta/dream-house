@@ -1,44 +1,63 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { PREGUNTAS } from "@/data/contenido";
-import { ListaPreguntas } from "@/components/Secciones";
-import { Contenedor, Eyebrow, Titulo } from "@/components/ui";
-
-export const metadata: Metadata = { title: "Preguntas frecuentes" };
-
-const temas = [
-  { id: "proyecto", titulo: "Sobre los proyectos" },
-  { id: "compra", titulo: "Compra y entrega" },
-  { id: "construccion", titulo: "Construcción" },
-] as const;
-
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Ayuda" };
 export default function Ayuda() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: PREGUNTAS.filter((q) => !q.pendiente).map((q) => ({
-      "@type": "Question",
-      name: q.p,
-      acceptedAnswer: { "@type": "Answer", text: q.r },
-    })),
-  };
-
   return (
-    <Contenedor className="pt-10 sm:pt-16">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Eyebrow>Ayuda</Eyebrow>
-      <Titulo as="h1" className="mt-3">Preguntas frecuentes</Titulo>
-      <p className="mt-3 text-gris">
-        ¿No encuentras tu respuesta? <Link href="/contacto" className="underline underline-offset-4">Escríbenos</Link>.
-      </p>
-      <div className="mt-12 space-y-14">
-        {temas.map((t) => (
-          <section key={t.id} className="grid gap-6 lg:grid-cols-[1fr_2fr] lg:gap-16">
-            <h2 className="font-display text-3xl tracking-tight">{t.titulo}</h2>
-            <ListaPreguntas preguntas={PREGUNTAS.filter((q) => q.tema === t.id)} />
-          </section>
-        ))}
+    <div className="ancho pagina-ayuda">
+      <p className="sobrelinea">ESTAMOS PARA AYUDARTE</p>
+      <h1 className="titulo-pagina">¿En qué te ayudamos?</h1>
+      <div className="grid gap-5 md:grid-cols-2 mt-9">
+        <Link className="panel bloque-ayuda" href="/recuperar">
+          <span aria-hidden>✉</span>
+          <h2>Recuperar mis archivos</h2>
+          <p>Solicita un enlace con tu correo de compra.</p>
+          <span className="enlace">Recuperar acceso →</span>
+        </Link>
+        <Link className="panel bloque-ayuda" href="/contacto">
+          <span aria-hidden>⌁</span>
+          <h2>Ayuda con mi compra</h2>
+          <p>Consulta los canales de soporte disponibles.</p>
+          <span className="enlace">Contactar soporte →</span>
+        </Link>
       </div>
-    </Contenedor>
+      <section className="preguntas">
+        <h2 className="font-display text-3xl mb-5">Antes de elegir tu casa</h2>
+        <details>
+          <summary>¿Puedo comprar y descargar planos ahora?</summary>
+          <p>
+            Este sitio es una demostración. Los precios, proyectos y paquetes
+            son de ejemplo. Puedes simular un pago, pero no se cobra ni se
+            entregan planos reales.
+          </p>
+        </details>
+        <details>
+          <summary>¿Qué incluye el paquete?</summary>
+          <p>
+            La ficha muestra los entregables de ejemplo y sus formatos. El DWG
+            editable está pendiente de confirmar. No incluye cálculo
+            estructural, instalaciones, trámites ni adaptación.
+          </p>
+        </details>
+        <details>
+          <summary>¿La casa cabe en mi terreno?</summary>
+          <p>
+            Las dimensiones son una referencia. Un profesional local debe
+            revisar orientación, normativa, suelo y restricciones del terreno
+            antes de construir.
+          </p>
+        </details>
+        <details>
+          <summary>¿Puedo adaptar un proyecto?</summary>
+          <p>
+            Sí puedes preparar una consulta con el nombre de la casa. La
+            adaptación requiere una cotización separada. El canal de contacto
+            aún está por confirmar.
+          </p>
+          <Link href="/adaptar" className="enlace">
+            Consultar proyecto personalizado →
+          </Link>
+        </details>
+      </section>
+    </div>
   );
 }

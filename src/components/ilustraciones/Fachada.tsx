@@ -52,7 +52,7 @@ function Plantas({ x, w, y }: { x: number; w: number; y: number }) {
   );
 }
 
-export default function Fachada({ p, className }: { p: Proyecto; className?: string }) {
+export default function Fachada({ p, className, encajar = false }: { p: Proyecto; className?: string; encajar?: boolean }) {
   const r = aleatorio(p.slug);
   const { muro, acento, madera } = p.paleta;
   const uid = useId().replace(/:/g, "");
@@ -74,7 +74,7 @@ export default function Fachada({ p, className }: { p: Proyecto; className?: str
   const ventanasAlta = Math.max(2, Math.floor(W / 60));
 
   return (
-    <svg viewBox="0 0 400 300" className={className} role="img" aria-label={`Ilustración de la fachada de ${p.nombre}`} preserveAspectRatio="xMidYMid slice">
+    <svg viewBox="0 0 400 300" className={className} role="img" aria-label={`Ilustración de la fachada de ${p.nombre}`} preserveAspectRatio={encajar ? "xMidYMid meet" : "xMidYMid slice"}>
       <defs>
         <linearGradient id={`cielo-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#15213b" /><stop offset="0.55" stopColor="#3b4a70" /><stop offset="0.85" stopColor="#c99a78" />

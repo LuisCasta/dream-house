@@ -6,7 +6,7 @@ import type { Espacio, Proyecto } from "@/data/proyectos";
 
 const PISO_Y = 222;
 
-type Props = { p: Proyecto; espacio: Exclude<Espacio, "fachada">; className?: string };
+type Props = { p: Proyecto; espacio: Exclude<Espacio, "fachada">; className?: string; encajar?: boolean };
 
 function Ventana({ x, y, w, h, id }: { x: number; y: number; w: number; h: number; id: string }) {
   return (
@@ -35,14 +35,14 @@ function Maceta({ x, alto = 60 }: { x: number; alto?: number }) {
   );
 }
 
-export default function Interior({ p, espacio, className }: Props) {
+export default function Interior({ p, espacio, className, encajar = false }: Props) {
   const { muro, acento, madera } = p.paleta;
   const id = `ext-${useId().replace(/:/g, "")}`;
   const exterior = espacio === "patio";
   const pisoMadera = espacio === "sala" || espacio === "recamara" || espacio === "recamara2" || exterior;
 
   return (
-    <svg viewBox="0 0 400 300" className={className} role="img" aria-label={`Ilustración: ${espacio} de ${p.nombre}`} preserveAspectRatio="xMidYMid slice">
+    <svg viewBox="0 0 400 300" className={className} role="img" aria-label={`Ilustración: ${espacio} de ${p.nombre}`} preserveAspectRatio={encajar ? "xMidYMid meet" : "xMidYMid slice"}>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#dfe5e3" />

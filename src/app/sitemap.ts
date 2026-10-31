@@ -6,7 +6,7 @@ import { MEDIDAS } from "@/data/terrenos";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const rutas = ["", "/planos", "/como-funciona", "/que-incluye", "/ayuda", "/adaptar", "/contacto"];
+  const rutas = ["", "/planos", "/nosotros", "/como-funciona", "/que-incluye", "/ayuda", "/adaptar", "/contacto"];
   return [
     ...rutas.map((r) => ({ url: `${SITIO.url}${r}` })),
     ...MEDIDAS.map((m) => ({ url: `${SITIO.url}/planos/${m.slug}` })),
