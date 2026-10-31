@@ -7,14 +7,18 @@ export default function ContactoProyecto({
   nombre,
   slug,
   children = "Consultar adaptación",
+  mensaje,
 }: {
   nombre?: string;
   slug?: string;
   children?: React.ReactNode;
+  mensaje?: string;
 }) {
-  const mensaje = nombre
-    ? `Hola, quiero cotizar la adaptación de ${nombre}.`
-    : "Hola, quiero cotizar un proyecto personalizado.";
+  const mensajeContacto =
+    mensaje ??
+    (nombre
+      ? `Hola, quiero cotizar la adaptación de ${nombre}.`
+      : "Hola, quiero cotizar un proyecto personalizado.");
   const registrar = () => track("demo_contact", { proyecto: slug ?? null });
   return CONTACTO.pendiente ? (
     <Link
@@ -26,7 +30,7 @@ export default function ContactoProyecto({
     </Link>
   ) : (
     <a
-      href={enlaceWhatsApp(mensaje)}
+      href={enlaceWhatsApp(mensajeContacto)}
       onClick={registrar}
       target="_blank"
       rel="noopener noreferrer"

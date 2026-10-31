@@ -19,10 +19,10 @@ export const CONTACTO = {
 };
 
 export const REDES = [
-  { nombre: "TikTok", url: "https://www.tiktok.com/" }, // PENDIENTE: perfiles reales
-  { nombre: "Instagram", url: "https://www.instagram.com/" },
-  { nombre: "Facebook", url: "https://www.facebook.com/" },
-  { nombre: "YouTube", url: "https://www.youtube.com/" },
+  { nombre: "TikTok", url: "https://www.tiktok.com/", pendiente: true }, // PENDIENTE: perfiles reales
+  { nombre: "Instagram", url: "https://www.instagram.com/", pendiente: true },
+  { nombre: "Facebook", url: "https://www.facebook.com/", pendiente: true },
+  { nombre: "YouTube", url: "https://www.youtube.com/", pendiente: true },
 ];
 
 // Información profesional. No publicar nada que no sea verificable.
