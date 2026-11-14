@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import type { Proyecto } from "@/data/proyectos";
+import { linkPago, type Proyecto } from "@/data/proyectos";
 import { agregarAlCarrito } from "@/lib/carrito";
 import { track, vieneDeRedes } from "@/lib/analytics";
 import { precio } from "@/lib/formato";
@@ -13,6 +13,12 @@ import Plano from "../ilustraciones/Plano";
 export function useComprar(p: Proyecto) {
   const router = useRouter();
   return (paquete = p.paquetes[0].id) => {
+    const link = linkPago(p, paquete);
+    if (link) {
+      track("begin_checkout", { proyecto: p.slug, proveedor: "stripe" });
+      window.location.href = link;
+      return;
+    }
     agregarAlCarrito({ slug: p.slug, paquete });
     router.push("/checkout");
   };
