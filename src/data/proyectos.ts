@@ -48,6 +48,7 @@ export type Paquete = {
   nombre: string;
   precio: number; // MXN
   entregables: string[]; // ids de ENTREGABLES
+  linkPago?: string; // Stripe Payment Link. Si existe, "Comprar" manda directo a pagar.
 };
 
 export type Espacio = "fachada" | "sala" | "cocina" | "recamara" | "recamara2" | "bano" | "patio";
@@ -84,8 +85,8 @@ export type Proyecto = {
 
 const ENTREGABLES_COMPLETO = ["planos", "renders", "especificaciones", "editable"];
 
-function paqueteCompleto(precio: number): Paquete[] {
-  return [{ id: "completo", nombre: "Proyecto completo", precio, entregables: ENTREGABLES_COMPLETO }];
+function paqueteCompleto(precio: number, linkPago?: string): Paquete[] {
+  return [{ id: "completo", nombre: "Proyecto completo", precio, entregables: ENTREGABLES_COMPLETO, linkPago }];
 }
 
 function recorrido(nombre: string, plantas: number, extra: Partial<Record<Espacio, string>> = {}): Render[] {
@@ -126,7 +127,8 @@ export const PROYECTOS: Proyecto[] = [
     recamaras: 3,
     banos: 2.5,
     cochera: 1,
-    paquetes: paqueteCompleto(2490),
+    // TODO: link de PRUEBA (test_). Cambiar por el link de producción antes de vender.
+    paquetes: paqueteCompleto(2490, "https://buy.stripe.com/test_dRmbJ03IZ54629n4kQ7IY00"),
     renders: recorrido("Casa Brisa", 2, {
       fachada: "Celosía de madera, volumen volado y cochera techada en solo 7 metros de frente.",
       sala: "Doble altura junto a la escalera: la luz entra desde arriba.",
@@ -318,4 +320,9 @@ export function destacados() {
 export function entregablesDe(p: Proyecto, paqueteId?: string) {
   const paquete = p.paquetes.find((k) => k.id === paqueteId) ?? p.paquetes[0];
   return paquete.entregables.map((id) => ENTREGABLES[id]);
+}
+
+// Link de pago directo (Stripe) del paquete, si ya está conectado.
+export function linkPago(p: Proyecto, paquete = p.paquetes[0].id) {
+  return p.paquetes.find((x) => x.id === paquete)?.linkPago;
 }
