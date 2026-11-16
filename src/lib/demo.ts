@@ -9,6 +9,8 @@ export type PedidoDemo = {
 };
 // Solo datos no personales. El correo no se persiste ni viaja en URL/eventos.
 export function guardarDemo(slug: string, escenario: Escenario): PedidoDemo {
+  const proyecto = obtenerProyecto(slug);
+  if (!proyecto || proyecto.estado === "proximamente") throw new Error("Este proyecto aún no está disponible para compra.");
   const pedido: PedidoDemo = {
     id: `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
     slug,
@@ -24,7 +26,7 @@ export function leerDemo(id: string): PedidoDemo | null {
     const p = JSON.parse(sessionStorage.getItem(`dh_demo_${id}`) || "null");
     return p?.id === id &&
       p.demo === true &&
-      obtenerProyecto(p.slug) &&
+      obtenerProyecto(p.slug)?.estado === "listo" &&
       ["aprobado", "pendiente", "fallido"].includes(p.escenario)
       ? p
       : null;

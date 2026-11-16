@@ -13,6 +13,7 @@ import Plano from "../ilustraciones/Plano";
 export function useComprar(p: Proyecto) {
   const router = useRouter();
   return (paquete = p.paquetes[0].id) => {
+    if (p.estado === "proximamente") return;
     const link = linkPago(p, paquete);
     if (link) {
       track("begin_checkout", { proyecto: p.slug, proveedor: "stripe" });
@@ -26,6 +27,7 @@ export function useComprar(p: Proyecto) {
 
 export function BotonComprar({ p, className = "" }: { p: Proyecto; className?: string }) {
   const comprar = useComprar(p);
+  if (p.estado === "proximamente") return <span className="estado-proximamente">Próximamente</span>;
   return (
     <button type="button" onClick={() => comprar()} className={`${claseBoton("acento")} w-full ${className}`}>
       Comprar proyecto
@@ -67,6 +69,7 @@ export function CompraFijaMovil({ p, ancla }: { p: Proyecto; ancla: string }) {
     return () => io.disconnect();
   }, [ancla]);
 
+  if (p.estado === "proximamente") return null;
   return (
     <div
       className={`fixed inset-x-0 bottom-0 z-30 border-t border-linea bg-hueso/95 px-4 pt-3 backdrop-blur-md transition-transform duration-300 sm:hidden ${

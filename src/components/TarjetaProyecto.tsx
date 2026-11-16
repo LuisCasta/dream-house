@@ -3,9 +3,11 @@ import { precioDesde, type Proyecto } from "@/data/proyectos";
 import { banos, precio } from "@/lib/formato";
 import Render from "./Render";
 import { EtiquetaTerreno } from "./ui";
+import AvisoLanzamiento from "./AvisoLanzamiento";
 
 // Datos clave en una línea: lo mínimo para decidir si abrir el proyecto.
 export function DatosClave({ p, className = "" }: { p: Proyecto; className?: string }) {
+  if (p.estado === "proximamente") return <p className={`text-sm text-gris ${className}`}>Proyecto en preparación</p>;
   const datos = [
     `${p.m2} m²`,
     `${p.recamaras} rec.`,
@@ -43,29 +45,30 @@ export default function TarjetaProyecto({
           prioridad={prioridad}
         />
         {/* Rótulo como en las portadas de los videos: m² grande + terreno */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 rounded-t-2xl bg-gradient-to-b from-noche/60 to-transparent px-4 pb-10 pt-6 text-center">
+        {p.estado === "listo" && <div className="pointer-events-none absolute inset-x-0 top-0 rounded-t-2xl bg-gradient-to-b from-noche/60 to-transparent px-4 pb-10 pt-6 text-center">
           <p className="font-display text-[2.6rem] font-semibold leading-none tracking-tight text-hueso drop-shadow-sm">{p.m2} m²</p>
           <EtiquetaTerreno {...p.terreno} oscura className="mt-2.5" />
-        </div>
-        {p.nuevo && (
+        </div>}
+        {p.nuevo && p.estado === "listo" && (
           <span className="absolute bottom-3 left-3 rounded-full bg-oro px-2.5 py-1 font-romana text-[10px] font-semibold uppercase tracking-[0.15em] text-noche">Nuevo</span>
         )}
       </div>
       <div className="mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-[1.55rem] font-medium leading-tight tracking-tight">
-            <Link href={`/${p.slug}`} className="after:absolute after:inset-0">
+            <Link href={`/${p.slug}`}>
               {p.nombre}
             </Link>
           </h3>
-          <DatosClave p={p} className="mt-1" />
-          {etiqueta && <p className="mt-2 text-xs font-medium text-oro-oscuro">{etiqueta}</p>}
+          {p.estado === "listo" && <DatosClave p={p} className="mt-1" />}
+          {etiqueta && p.estado === "listo" && <p className="mt-2 text-xs font-medium text-oro-oscuro">{etiqueta}</p>}
         </div>
-        <p className="shrink-0 pt-1.5 text-right text-[15px] font-semibold">{precio(precioDesde(p)).replace(" MXN", "")}<span className="block text-[11px] font-normal text-gris">MXN</span></p>
+        {p.estado === "proximamente" ? <span className="estado-proximamente">Próximamente</span> : <p className="shrink-0 pt-1.5 text-right text-[15px] font-semibold">{precio(precioDesde(p)).replace(" MXN", "")}<span className="block text-[11px] font-normal text-gris">MXN</span></p>}
       </div>
-      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-noche/20 underline-offset-4 transition group-hover:decoration-oro">
-        Ver proyecto
-      </span>
+      {p.estado === "proximamente" && <AvisoLanzamiento p={p} />}
+      <Link href={`/${p.slug}/`} className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-noche/20 underline-offset-4 transition group-hover:decoration-oro">
+        {p.estado === "proximamente" ? "Ver avance" : "Ver proyecto"}
+      </Link>
     </article>
   );
 }

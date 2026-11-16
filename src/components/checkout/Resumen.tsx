@@ -2,6 +2,7 @@ import type { Proyecto } from "@/data/proyectos";
 import { precio } from "@/lib/formato";
 import ImagenVenta from "../proyecto/ImagenVenta";
 export default function Resumen({ p }: { p: Proyecto }) {
+  if (p.estado === "proximamente") return null;
   return (
     <aside className="resumen panel">
       <ImagenVenta p={p} />

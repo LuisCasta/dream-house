@@ -35,7 +35,7 @@ export default function FormularioCheckout() {
     );
   async function enviar(e: FormEvent) {
     e.preventDefault();
-    if (bloqueo.current || !p) return;
+    if (bloqueo.current || !p || p.estado === "proximamente") return;
     const errorEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
       ? ""
       : "Escribe un correo válido, por ejemplo nombre@correo.com.";
@@ -69,6 +69,15 @@ export default function FormularioCheckout() {
       setProcesando(false);
     }
   }
+  if (p.estado === "proximamente")
+    return (
+      <div className="ancho estado-vacio">
+        <span className="estado-proximamente">Próximamente</span>
+        <h1 className="titulo-pagina mt-5">{p.nombre} está en preparación.</h1>
+        <p className="text-gris my-5">Publicaremos su información y precio cuando esté listo. Aún no está disponible para compra.</p>
+        <Link href={`/${p.slug}/`} className="enlace">Ver avance del proyecto →</Link>
+      </div>
+    );
   return (
     <div className="ancho checkout">
       <Link href={`/${p.slug}/`} className="enlace text-sm">

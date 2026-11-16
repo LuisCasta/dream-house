@@ -32,7 +32,7 @@ export default function Contacto() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Contactar por WhatsApp
+              WhatsApp {CONTACTO.whatsappVisible}
             </a>
             <a className="enlace block mt-5" href={`mailto:${CONTACTO.email}`}>
               {CONTACTO.email}

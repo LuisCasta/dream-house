@@ -10,6 +10,8 @@ import Compra from "../Compra";
 import ContactoProyecto from "../ContactoProyecto";
 import Dialogo from "../Dialogo";
 import GaleriaCasa from "./GaleriaCasa";
+import ImagenVenta from "./ImagenVenta";
+import AvisoLanzamiento from "../AvisoLanzamiento";
 import { GuardarProyecto } from "../SeleccionGuardada";
 
 export default function Ficha({
@@ -23,6 +25,31 @@ export default function Ficha({
   useEffect(() => {
     track("demo_view_project", { proyecto: p.slug });
   }, [p.slug]);
+  if (p.estado === "proximamente") {
+    return (
+      <Dialogo titulo={p.nombre} cerrar={cerrar}>
+        <header className="ficha-cabecera">
+          <span className="font-display text-xl">{p.nombre}</span>
+          <button className="cerrar" onClick={cerrar} aria-label="Cerrar ficha">×</button>
+        </header>
+        <div className="ficha-grid">
+          <section className="galeria" aria-label={`Avance de ${p.nombre}`}>
+            <div className="galeria-principal"><ImagenVenta p={p} encajar /></div>
+            <p className="nota mt-5">Imagen conceptual. El diseño final está en preparación.</p>
+          </section>
+          <section className="ficha-info">
+            <span className="estado-proximamente">Próximamente</span>
+            <h1 className="titulo-ficha mt-5">{p.nombre}</h1>
+            <p className="mt-4 text-gris">Estamos preparando los planos y las imágenes de este proyecto. Publicaremos su información completa y precio cuando esté listo.</p>
+            <p className="nota mt-4">Aún no está disponible para compra. Fecha de lanzamiento por confirmar.</p>
+            <AvisoLanzamiento p={p} />
+            <GuardarProyecto p={p} />
+            <button type="button" className="enlace mt-5" onClick={cerrar}>Volver al catálogo</button>
+          </section>
+        </div>
+      </Dialogo>
+    );
+  }
   return (
     <Dialogo titulo={p.nombre} cerrar={cerrar}>
       <header className="ficha-cabecera">
@@ -35,8 +62,9 @@ export default function Ficha({
         <section aria-label="Imágenes y recorrido" className="galeria">
           <GaleriaCasa p={p} />
           <p className="nota mt-5">
-            Tres ilustraciones provisionales y un espacio para el recorrido. Las
-            imágenes reales están pendientes.
+            {datos.imagenes.every((m) => !m.provisional)
+              ? `${datos.imagenes.length} renders de visualización del proyecto.`
+              : "Ilustraciones provisionales. Las imágenes reales están pendientes."}
           </p>
           <Link
             href={`/${p.slug}/`}
@@ -49,11 +77,12 @@ export default function Ficha({
           <p className="sobrelinea">EL PROYECTO · {p.estilo}</p>
           <h1 className="titulo-ficha">{p.nombre}</h1>
           <p className="mt-3 text-gris">{p.lema}</p>
+          {p.documentacionVerificada && <p className="mt-3 text-gris">{p.descripcion}</p>}
           <dl className="datos-casa">
             {[
               [textoMedida(p.terreno), "Terreno de referencia"],
               [`${p.m2} m²`, "Construidos"],
-              [`${p.recamaras} recámaras`, `${banos(p.banos)} baños`],
+              [`${p.recamaras} recámaras`, `${banos(p.banos)} ${p.banos === 1 ? "baño" : "baños"}`],
               [
                 `${p.plantas} ${p.plantas === 1 ? "planta" : "plantas"}`,
                 "Niveles",
@@ -66,10 +95,12 @@ export default function Ficha({
             ))}
           </dl>
           <p className="nota">
-            Datos ilustrativos por confirmar. La medida no garantiza
-            compatibilidad con tu terreno.
+            {p.documentacionVerificada
+              ? "Distribución y terreno según los planos del proyecto. La medida no garantiza compatibilidad con tu terreno."
+              : "Datos ilustrativos por confirmar. La medida no garantiza compatibilidad con tu terreno."}
           </p>
           <h2 className="font-display text-2xl mt-6">Qué recibes</h2>
+          {p.documentacionVerificada && <p className="nota mt-2">Documento PDF de seis páginas: portada y cinco láminas técnicas.</p>}
           <ul className="entregables">
             {datos.entregables.map((e) => (
               <li key={e.id}>
@@ -104,7 +135,9 @@ export default function Ficha({
               revisión y adaptación local.
             </p>
             <p className="nota mt-2">
-              Paquete de ejemplo, sujeto a confirmación.
+              {p.documentacionVerificada
+                ? "Contenido según el PDF del proyecto. Precio de ejemplo."
+                : "Paquete de ejemplo, sujeto a confirmación."}
             </p>
           </div>
           <div className="compra-fija">
@@ -123,7 +156,7 @@ export default function Ficha({
               ¿Quieres adaptar esta casa?
             </ContactoProyecto>
             <p className="nota mt-1">
-              Cotización separada. Canal de contacto por confirmar.
+              Cotización separada. Contáctanos por WhatsApp.
             </p>
           </div>
         </section>

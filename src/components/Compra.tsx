@@ -12,6 +12,8 @@ export default function Compra({
   p: Proyecto;
   className?: string;
 }) {
+  if (p.estado === "proximamente")
+    return <span className={`estado-proximamente ${className}`}>Próximamente</span>;
   const link = linkPago(p);
   if (link)
     return (

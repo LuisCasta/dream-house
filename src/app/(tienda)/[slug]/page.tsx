@@ -13,8 +13,8 @@ export async function generateMetadata({
   const p = obtenerProyecto((await params).slug);
   return p
     ? {
-        title: p.nombre,
-        description: `${p.lema} Proyecto de ejemplo de Dream House.`,
+        title: p.estado === "proximamente" ? `${p.nombre} · Próximamente` : p.nombre,
+        description: p.estado === "proximamente" ? `${p.nombre} está en preparación. Próximamente compartiremos sus planos, imágenes y precio.` : p.descripcion,
         alternates: { canonical: `/${p.slug}/` },
       }
     : {};

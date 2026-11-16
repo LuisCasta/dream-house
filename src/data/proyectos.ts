@@ -41,6 +41,40 @@ export const ENTREGABLES: Record<string, Entregable> = {
   },
 };
 
+// Contenido verificado del PDF de Casa Brisa; no se añade al paquete genérico.
+const ENTREGABLES_BRISA: Record<string, Entregable> = {
+  "brisa-planta": {
+    id: "brisa-planta",
+    nombre: "Planta arquitectónica acotada",
+    descripcion: "PA-01: distribución de planta baja con cotas, niveles y espacios identificados.",
+    formato: "PDF",
+  },
+  "brisa-fachada": {
+    id: "brisa-fachada",
+    nombre: "Fachada principal",
+    descripcion: "PA-02: alzado de fachada con cotas y niveles, acceso principal y acceso lateral.",
+    formato: "PDF",
+  },
+  "brisa-cortes": {
+    id: "brisa-cortes",
+    nombre: "Cortes arquitectónicos",
+    descripcion: "PA-03 y PA-04: corte longitudinal A-A y corte transversal B-B con cotas y niveles.",
+    formato: "PDF",
+  },
+  "brisa-cimentacion": {
+    id: "brisa-cimentacion",
+    nombre: "Planta de cimentación",
+    descripcion: "PA-05: planta de cimentación con ejes y claves de elementos. No sustituye el cálculo estructural ni los detalles de ingeniería.",
+    formato: "PDF",
+  },
+  "brisa-portada": {
+    id: "brisa-portada",
+    nombre: "Render de fachada",
+    descripcion: "Imagen de referencia de la fachada incluida en la portada del documento de seis páginas.",
+    formato: "PDF",
+  },
+};
+
 // Preparado para varios paquetes (Esencial / Completo / + Adaptación).
 // Mientras solo exista uno, la web no muestra selector de paquete.
 export type Paquete = {
@@ -51,7 +85,7 @@ export type Paquete = {
   linkPago?: string; // Stripe Payment Link. Si existe, "Comprar" manda directo a pagar.
 };
 
-export type Espacio = "fachada" | "sala" | "cocina" | "recamara" | "recamara2" | "bano" | "patio";
+export type Espacio = "fachada" | "sala" | "cocina" | "recamara" | "recamara2" | "bano" | "patio" | "pasillo";
 
 export type Render = {
   espacio: Espacio;
@@ -63,6 +97,7 @@ export type Render = {
 export type Paleta = { muro: string; acento: string; madera: string };
 
 export type Proyecto = {
+  estado: "listo" | "proximamente";
   slug: string; // también es la URL corta: dreamhouse.mx/brisa
   codigo: string; // código interno, siempre secundario
   nombre: string;
@@ -71,6 +106,7 @@ export type Proyecto = {
   estilo: string;
   terreno: Terreno; // terreno para el que fue diseñado
   m2: number;
+  documentacionVerificada?: boolean;
   plantas: 1 | 2;
   recamaras: number;
   banos: number; // 2.5 = 2 baños completos + medio baño
@@ -90,7 +126,7 @@ function paqueteCompleto(precio: number, linkPago?: string): Paquete[] {
 }
 
 function recorrido(nombre: string, plantas: number, extra: Partial<Record<Espacio, string>> = {}): Render[] {
-  const base: Record<Espacio, [string, string]> = {
+  const base: Record<Exclude<Espacio, "pasillo">, [string, string]> = {
     fachada: ["Fachada", `Así se ve ${nombre} desde la calle.`],
     sala: ["Sala", "Un espacio abierto que recibe luz natural durante el día."],
     cocina: ["Cocina-comedor", "Cocina integrada al comedor para convivir mientras cocinas."],
@@ -99,7 +135,7 @@ function recorrido(nombre: string, plantas: number, extra: Partial<Record<Espaci
     bano: ["Baño", "Ventilación e iluminación natural."],
     patio: ["Patio", "Un respiro al aire libre al fondo del terreno."],
   };
-  return (Object.keys(base) as Espacio[]).map((e) => ({
+  return (Object.keys(base) as (keyof typeof base)[]).map((e) => ({
     espacio: e,
     titulo: base[e][0],
     texto: extra[e] ?? base[e][1],
@@ -115,30 +151,60 @@ export const DATOS_DE_EJEMPLO = true;
 export const PROYECTOS: Proyecto[] = [
   {
     slug: "brisa",
+    estado: "listo",
     codigo: "DH-0715-01",
     nombre: "Casa Brisa",
-    lema: "Luz y ventilación en un terreno de 7 metros.",
+    lema: "Una casa con alma de playa.",
     descripcion:
-      "Dos plantas que aprovechan cada metro de un terreno angosto: áreas sociales abiertas abajo, tres recámaras arriba y un patio al fondo para que la casa respire.",
-    estilo: "Contemporáneo mexicano",
+      "Casa de una planta para un terreno de 7 × 15 m, con dos recámaras y un baño completo. Sala, comedor y cocina integrados se abren hacia una estancia exterior y un jardín lateral. Un pasillo interior conecta las habitaciones con el patio interior; al fondo se encuentra el patio de servicio. Sin cochera.",
+    estilo: "Mediterráneo tropical",
     terreno: { frente: 7, fondo: 15 },
-    m2: 118,
-    plantas: 2,
-    recamaras: 3,
-    banos: 2.5,
-    cochera: 1,
+    m2: 72,
+    documentacionVerificada: true,
+    plantas: 1,
+    recamaras: 2,
+    banos: 1,
+    cochera: 0,
     // TODO: link de PRUEBA (test_). Cambiar por el link de producción antes de vender.
-    paquetes: paqueteCompleto(2490, "https://buy.stripe.com/test_dRmbJ03IZ54629n4kQ7IY00"),
-    renders: recorrido("Casa Brisa", 2, {
-      fachada: "Celosía de madera, volumen volado y cochera techada en solo 7 metros de frente.",
-      sala: "Doble altura junto a la escalera: la luz entra desde arriba.",
-      patio: "Un patio al fondo que ventila e ilumina toda la casa.",
-    }),
+    paquetes: [{
+      id: "completo",
+      nombre: "Proyecto completo",
+      precio: 2490,
+      entregables: ["brisa-planta", "brisa-fachada", "brisa-cortes", "brisa-cimentacion", "brisa-portada"],
+      linkPago: "https://buy.stripe.com/test_dRmbJ03IZ54629n4kQ7IY00",
+    }],
+    renders: [
+      {
+        espacio: "fachada",
+        titulo: "Fachada",
+        texto: "Fachada en tonos cálidos, madera y vegetación tropical al atardecer.",
+        src: "/renders/brisa/fachada.webp",
+      },
+      {
+        espacio: "cocina",
+        titulo: "Sala-comedor",
+        texto: "Sala, comedor y cocina integrados junto a un jardín lateral.",
+        src: "/renders/brisa/sala-comedor.webp",
+      },
+      {
+        espacio: "sala",
+        titulo: "Sala",
+        texto: "Una sala luminosa con tonos cálidos, madera y detalles naturales.",
+        src: "/renders/brisa/sala.webp",
+      },
+      {
+        espacio: "pasillo",
+        titulo: "Pasillo",
+        texto: "Pasillo hacia las habitaciones y el patio interior.",
+        src: "/renders/brisa/pasillo.webp",
+      },
+    ],
     paleta: { muro: "#efe7da", acento: "#b4552d", madera: "#9a6b45" },
     destacado: true,
   },
   {
     slug: "nido",
+    estado: "proximamente",
     codigo: "DH-0715-02",
     nombre: "Casa Nido",
     lema: "Una planta, todo a la mano.",
@@ -157,6 +223,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "santorini",
+    estado: "proximamente",
     codigo: "DH-0815-01",
     nombre: "Casa Santorini",
     lema: "Muros blancos, arcos y terraza en planta alta.",
@@ -177,6 +244,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "jacaranda",
+    estado: "proximamente",
     codigo: "DH-0815-02",
     nombre: "Casa Jacaranda",
     lema: "Tres recámaras con baño propio.",
@@ -196,6 +264,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "patio",
+    estado: "proximamente",
     codigo: "DH-1010-01",
     nombre: "Casa Patio",
     lema: "Todo gira alrededor de un patio.",
@@ -214,6 +283,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "barro-y-luz",
+    estado: "proximamente",
     codigo: "DH-1015-01",
     nombre: "Casa Barro y Luz",
     lema: "Tonos de barro y una planta bien resuelta.",
@@ -233,6 +303,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "mezquite",
+    estado: "proximamente",
     codigo: "DH-1015-02",
     nombre: "Casa Mezquite",
     lema: "Cuatro recámaras para familias que crecen.",
@@ -252,6 +323,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "hacienda-de-luz",
+    estado: "proximamente",
     codigo: "DH-1020-01",
     nombre: "Casa Hacienda de Luz",
     lema: "Arcos, corredor y una sola planta.",
@@ -272,6 +344,7 @@ export const PROYECTOS: Proyecto[] = [
   },
   {
     slug: "laurel",
+    estado: "proximamente",
     codigo: "DH-1020-02",
     nombre: "Casa Laurel",
     lema: "Amplia, luminosa y con jardín.",
@@ -319,10 +392,11 @@ export function destacados() {
 
 export function entregablesDe(p: Proyecto, paqueteId?: string) {
   const paquete = p.paquetes.find((k) => k.id === paqueteId) ?? p.paquetes[0];
-  return paquete.entregables.map((id) => ENTREGABLES[id]);
+  return paquete.entregables.map((id) => ENTREGABLES_BRISA[id] ?? ENTREGABLES[id]);
 }
 
 // Link de pago directo (Stripe) del paquete, si ya está conectado.
 export function linkPago(p: Proyecto, paquete = p.paquetes[0].id) {
+  if (p.estado === "proximamente") return undefined;
   return p.paquetes.find((x) => x.id === paquete)?.linkPago;
 }

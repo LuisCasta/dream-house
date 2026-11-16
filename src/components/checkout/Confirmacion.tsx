@@ -200,7 +200,7 @@ export default function Confirmacion() {
           <Link href="/contacto" className="enlace mt-3 inline-block">
             Contactar soporte
           </Link>
-          <p className="nota mt-2">Canales de atención por confirmar.</p>
+          <p className="nota mt-2">Contáctanos por WhatsApp o correo para recibir atención.</p>
         </div>
       </div>
       <div className="aviso text-center mt-6">

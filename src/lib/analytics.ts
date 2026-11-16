@@ -5,6 +5,7 @@
 // Pixel sin tocar este código. Si se prefiere enviarlos directo, hacerlo en `enviar()`.
 
 export type Evento =
+  | "launch_notification_interest"
   | "demo_view_project"
   | "demo_begin_checkout"
   | "demo_contact"

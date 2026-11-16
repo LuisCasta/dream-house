@@ -4,13 +4,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { PROYECTOS, obtenerProyecto } from "@/data/proyectos";
 import { MEDIDAS, slugMedida, textoMedida } from "@/data/terrenos";
-import { precio, banos } from "@/lib/formato";
 import ImagenVenta from "../proyecto/ImagenVenta";
 import Ficha from "../proyecto/Ficha";
-import Compra from "../Compra";
+import ProyectoDestacado from "./ProyectoDestacado";
 import BannerColaboracion from "./BannerColaboracion";
 import InformacionCatalogo from "./InformacionCatalogo";
 import SeleccionGuardada from "../SeleccionGuardada";
+import AvisoLanzamiento from "../AvisoLanzamiento";
 
 export default function Catalogo({
   inicial,
@@ -58,8 +58,10 @@ export default function Catalogo({
   const lista = PROYECTOS.filter(
     (p) =>
       normalizar(p.nombre).includes(normalizar(busqueda)) &&
-      (!medida || slugMedida(p.terreno) === medida),
+      (!medida || (p.estado === "listo" && slugMedida(p.terreno) === medida)),
   );
+  const listos = lista.filter((p) => p.estado === "listo");
+  const proximos = lista.filter((p) => p.estado === "proximamente");
   function abrir(e: MouseEvent<HTMLAnchorElement>, slug: string) {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
       return;
@@ -120,7 +122,7 @@ export default function Catalogo({
             onChange={(e) => setMedida(e.target.value)}
           >
             <option value="">Todas las medidas</option>
-            {MEDIDAS.map((m) => (
+            {MEDIDAS.filter((m) => PROYECTOS.some((p) => p.estado === "listo" && slugMedida(p.terreno) === m.slug) || m.slug === medidaInicial).map((m) => (
               <option key={m.slug} value={m.slug}>
                 {textoMedida(m)}
               </option>
@@ -144,58 +146,54 @@ export default function Catalogo({
       </div>
       <SeleccionGuardada abrir={abrir} />
       <p className="nota mb-5">
-        Propuesta visual · Imágenes, datos, paquetes y precios de ejemplo por
-        confirmar.
+        Casa Brisa cuenta con planos y renders revisados. Los demás proyectos
+        están en preparación.
       </p>
       <div id="casas" className="catalogo-resultados">
         {lista.length ? (
-          <div className="catalogo-grid">
-            {lista.map((p, i) => (
-              <article key={p.slug} className="tarjeta-casa">
+          <>
+            {listos.map((p) => <ProyectoDestacado key={p.slug} p={p} abrir={abrir} />)}
+            {proximos.length > 0 && <section className="proximos-proyectos" aria-labelledby="titulo-proximos">
+              <header className="proximos-cabecera">
+                <p className="sobrelinea">LO QUE VIENE</p>
+                <h2 id="titulo-proximos">Más casas en camino</h2>
+                <p className="nota">Avances conceptuales. Compartiremos medidas, contenido y precio cuando cada proyecto esté revisado.</p>
+              </header>
+              <div className="catalogo-grid">
+            {proximos.map((p) => (
+              <article key={p.slug} className="tarjeta-casa tarjeta-proxima">
                 <Link
                   href={`/${p.slug}/`}
                   onClick={(e) => abrir(e, p.slug)}
                   aria-label={`Ver imágenes de ${p.nombre}`}
                   className="foto-tarjeta"
                 >
-                  <ImagenVenta p={p} prioridad={i < 3} />
+                  <ImagenVenta p={p} />
                 </Link>
                 <div className="tarjeta-info">
-                  <h2>
+                  <span className="estado-proximamente">Próximamente</span>
+                  <h3>
                     <Link
                       href={`/${p.slug}/`}
                       onClick={(e) => abrir(e, p.slug)}
                     >
                       {p.nombre}
                     </Link>
-                  </h2>
-                  <p className="tarjeta-terreno">
-                    Terreno de referencia {textoMedida(p.terreno)}
-                  </p>
-                  <p className="tarjeta-datos">
-                    {p.m2} m² · {p.recamaras} recámaras · {banos(p.banos)} baños
-                    · {p.plantas} {p.plantas === 1 ? "planta" : "plantas"}
-                  </p>
-                  <p className="tarjeta-incluye">
-                    <span aria-hidden>▤</span> Planos PDF, fachadas y cortes
-                    <br />
-                    <span className="pl-6">Renders y especificaciones</span>
-                  </p>
-                  <p className="precio-tarjeta">
-                    {precio(p.paquetes[0].precio)}
-                  </p>
-                  <Compra p={p} />
+                  </h3>
+                  <AvisoLanzamiento p={p} />
                   <Link
                     className="enlace ver-imagenes"
                     href={`/${p.slug}/`}
                     onClick={(e) => abrir(e, p.slug)}
                   >
-                    Ver imágenes y recorrido <span aria-hidden>→</span>
+                    Ver avance <span aria-hidden>→</span>
                   </Link>
                 </div>
               </article>
             ))}
-          </div>
+              </div>
+            </section>}
+          </>
         ) : (
           <div className="sin-resultados">
             <h2 className="font-display text-3xl">No encontramos esa casa.</h2>

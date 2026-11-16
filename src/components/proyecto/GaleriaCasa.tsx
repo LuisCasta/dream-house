@@ -67,11 +67,13 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
     servidor,
   );
   const datos = venta(p);
-  const nombres = ["Fachada", "Sala", "Cocina", "Recorrido"];
+  const tieneRecorrido = Boolean(datos.youtubeId) || datos.imagenes.every((m) => m.provisional);
+  const total = datos.imagenes.length + (tieneRecorrido ? 1 : 0);
+  const nombres = [...datos.imagenes.map((m) => m.titulo), ...(tieneRecorrido ? ["Recorrido"] : [])];
   const cambiar = useCallback((nuevo: number) => {
-    setIndice((nuevo + 4) % 4);
+    setIndice((nuevo + total) % total);
     setVideoAbierto(false);
-  }, []);
+  }, [total]);
   const detener = pausado || reducido || videoAbierto;
   useEffect(() => {
     if (detener || encima || oculto) return;
@@ -125,9 +127,9 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
             key={`${indice}-${grande}`}
             role="group"
             aria-roledescription="diapositiva"
-            aria-label={`${indice + 1} de 4: ${nombres[indice]}`}
+            aria-label={`${indice + 1} de ${total}: ${nombres[indice]}`}
           >
-            {indice < 3 ? (
+            {indice < datos.imagenes.length ? (
               grande ? (
                 <ImagenVenta p={p} indice={indice} encajar prioridad />
               ) : (
@@ -199,7 +201,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
         <div className="carrusel-pie">
           <p aria-live={detener ? "polite" : "off"} aria-atomic="true">
             <span className="carrusel-numero">
-              {indice + 1} <span>/ 4</span>
+              {indice + 1} <span>/ {total}</span>
             </span>
             <span>{nombres[indice]}</span>
           </p>
@@ -229,7 +231,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
   return (
     <>
       {visor(false)}
-      <div className="miniaturas" aria-label="Seleccionar imagen o video">
+      <div className="miniaturas" aria-label={tieneRecorrido ? "Seleccionar imagen o video" : "Seleccionar imagen"}>
         {datos.imagenes.map((m, i) => (
           <button
             key={m.espacio}
@@ -245,19 +247,19 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
             <span>{nombres[i]}</span>
           </button>
         ))}
-        <button
+        {tieneRecorrido && <button
           className="miniatura miniatura-video"
           onClick={() => {
-            cambiar(3);
+            cambiar(datos.imagenes.length);
             setPausado(true);
           }}
-          aria-pressed={indice === 3}
+          aria-pressed={indice === datos.imagenes.length}
         >
           <span className="miniatura-play" aria-hidden>
             ▷
           </span>
           <span>Ver recorrido</span>
-        </button>
+        </button>}
       </div>
       {ampliada && (
         <Dialogo
@@ -267,7 +269,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
         >
           <header className="visor-cabecera">
             <p>
-              {p.nombre} <span>· Imágenes y recorrido</span>
+              {p.nombre} <span>· {tieneRecorrido ? "Imágenes y recorrido" : "Imágenes"}</span>
             </p>
             <button
               className="cerrar"

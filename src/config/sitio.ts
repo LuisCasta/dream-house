@@ -11,10 +11,10 @@ export const SITIO = {
 };
 
 export const CONTACTO = {
-  pendiente: true,
-  whatsapp: "520000000000", // PENDIENTE: número real con código de país, sin "+"
-  whatsappVisible: "+52 00 0000 0000",
-  email: "hola@dreamhouse.mx",
+  pendiente: false,
+  whatsapp: "528715256121",
+  whatsappVisible: "+52 871 525 6121",
+  email: "dream.house.ia.store@gmail.com",
   horario: "Lunes a viernes, 9:00 a 18:00 (hora del centro de México)",
 };
 
