@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "node scripts/finalizar-export.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:metricas": "node --test scripts/comprobar-metricas.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

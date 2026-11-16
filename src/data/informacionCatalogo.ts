@@ -1,8 +1,8 @@
-import { COMPRA_REAL_HABILITADA } from "@/config/compra";
-
-export const ATENCION_CATALOGO = COMPRA_REAL_HABILITADA
-  ? ["Entrega digital", "Pago seguro", "Soporte de compra"]
-  : ["Compra de demostración", "Sin cobros reales", "Ayuda y contacto"];
+export const ATENCION_CATALOGO = [
+  "Entrega inmediata",
+  "Compras seguras con Stripe",
+  "Ayuda y contacto",
+];
 
 export const ADAPTACION_CATALOGO = {
   titulo: "Tu proyecto, adaptado a tu terreno.",
@@ -26,9 +26,8 @@ export const PREGUNTAS_CATALOGO = [
   },
   {
     pregunta: "¿Cómo recibo los archivos?",
-    respuesta: COMPRA_REAL_HABILITADA
-      ? "Cuando se confirme tu pago, podrás descargar el paquete y recibirás un enlace en el correo de compra."
-      : "Esta versión permite probar el proceso. No realiza cobros ni entrega proyectos reales.",
+    respuesta:
+      "Una vez que Stripe confirme la acreditación de tu pago, podrás descargar de inmediato un archivo ZIP con los archivos incluidos en el paquete de tu proyecto. Descomprímelo en tu dispositivo para consultar los planos, renders y demás documentos indicados en la ficha del producto.",
   },
   {
     pregunta: "¿Necesito crear una cuenta?",

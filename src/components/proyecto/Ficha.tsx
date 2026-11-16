@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+import { leerConsentimiento, suscribirConsentimiento } from "@/lib/consentimiento";
 import Link from "next/link";
 import type { Proyecto } from "@/data/proyectos";
 import { venta } from "@/data/venta";
@@ -22,9 +23,10 @@ export default function Ficha({
   cerrar: () => void;
 }) {
   const datos = venta(p);
+  const consentimiento = useSyncExternalStore(suscribirConsentimiento, leerConsentimiento, () => null);
   useEffect(() => {
-    track("demo_view_project", { proyecto: p.slug });
-  }, [p.slug]);
+    track("view_project", { proyecto: p.slug, estado: p.estado });
+  }, [p.slug, p.estado, consentimiento]);
   if (p.estado === "proximamente") {
     return (
       <Dialogo titulo={p.nombre} cerrar={cerrar}>

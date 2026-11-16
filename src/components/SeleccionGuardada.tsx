@@ -5,6 +5,7 @@ import { obtenerProyecto, type Proyecto } from "@/data/proyectos";
 import { guardarSeleccion, useSeleccion } from "@/lib/seleccion";
 import Compra from "./Compra";
 import ImagenVenta from "./proyecto/ImagenVenta";
+import { track } from "@/lib/analytics";
 
 export function GuardarProyecto({ p }: { p: Proyecto }) {
   const seleccion = useSeleccion();
@@ -17,6 +18,7 @@ export function GuardarProyecto({ p }: { p: Proyecto }) {
         aria-pressed={guardado}
         onClick={() => {
           const correcto = guardarSeleccion(guardado ? null : p.slug);
+          if (correcto) track(guardado ? "remove_saved_project" : "save_project", { proyecto: p.slug });
           setMensaje(
             correcto
               ? guardado

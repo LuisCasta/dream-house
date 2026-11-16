@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import PreferenciasAnalitica from "./PreferenciasAnalitica";
 import { CONTACTO, REDES, SITIO, enlaceWhatsApp } from "@/config/sitio";
 
 export default function Footer() {
@@ -17,6 +18,7 @@ export default function Footer() {
             <Link href="/legal/terminos/">Términos</Link>
             <Link href="/legal/privacidad/">Privacidad</Link>
             <Link href="/legal/politica-de-compra/">Política de compra</Link>
+            <PreferenciasAnalitica />
           </nav>
         </div>
         {(!CONTACTO.pendiente || redesConfirmadas.length > 0) && (

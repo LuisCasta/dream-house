@@ -21,11 +21,11 @@ export default function FormularioAdaptar() {
     ]
       .filter(Boolean)
       .join("\n");
-    track("request_modification", { proyecto: p?.slug ?? null });
+    track("prepare_modification_request", { proyecto: p?.slug ?? null });
     setMensajePreparado(mensaje);
   };
   return (
-    <form onSubmit={enviar} className="space-y-5">
+    <form onSubmit={enviar} className="space-y-5" data-clarity-mask="true">
       <label className="block text-sm">
         Proyecto
         <select
@@ -63,14 +63,16 @@ export default function FormularioAdaptar() {
       {mensajePreparado && (
         <div className="aviso" role="status">
           <p className="whitespace-pre-line">{mensajePreparado}</p>
-          <a
+          <button
+              type="button"
               className="enlace inline-block mt-4"
-              href={enlaceWhatsApp(mensajePreparado)}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                track("request_modification", { canal: "whatsapp" });
+                window.open(enlaceWhatsApp(mensajePreparado), "_blank", "noopener,noreferrer");
+              }}
             >
               Continuar en WhatsApp →
-            </a>
+            </button>
           <p className="nota mt-3">Se abrirá WhatsApp para {CONTACTO.whatsappVisible}. Envía el mensaje para completar la consulta.</p>
         </div>
       )}

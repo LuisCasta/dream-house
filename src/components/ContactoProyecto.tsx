@@ -19,7 +19,7 @@ export default function ContactoProyecto({
     (nombre
       ? `Hola, quiero cotizar la adaptación de ${nombre}.`
       : "Hola, quiero cotizar un proyecto personalizado.");
-  const registrar = () => track("demo_contact", { proyecto: slug ?? null });
+  const registrar = () => track("request_modification", { proyecto: slug ?? null, canal: "whatsapp" });
   return CONTACTO.pendiente ? (
     <Link
       href={`/adaptar/${slug ? `?proyecto=${slug}` : ""}`}

@@ -60,6 +60,8 @@ export default async function Legal({ params }: PageProps<"/legal/[doc]">) {
             <li><a href="https://policies.google.com/privacy?hl=es" target="_blank" rel="noopener noreferrer">Privacidad de Google y Gmail</a></li>
             <li><a href="https://www.whatsapp.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Privacidad de WhatsApp</a></li>
             <li><a href="https://stripe.com/mx/privacy" target="_blank" rel="noopener noreferrer">Privacidad de Stripe</a></li>
+            <li><a href="https://privacy.microsoft.com/es-mx/privacystatement" target="_blank" rel="noopener noreferrer">Privacidad de Microsoft Clarity</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-cookies" target="_blank" rel="noopener noreferrer">Cookies de Microsoft Clarity</a></li>
           </ul>}
         </section>)}
       </article>

@@ -34,7 +34,7 @@ export default function Recuperar() {
   }
   return (
     <div className="ancho py-10 sm:py-16">
-      <section className="recuperar panel">
+      <section className="recuperar panel" data-clarity-mask="true">
         <div className="estado-icono correo-icono" aria-hidden>
           ✉
         </div>

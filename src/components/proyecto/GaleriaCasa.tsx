@@ -8,6 +8,7 @@ import {
 } from "react";
 import type { Proyecto } from "@/data/proyectos";
 import { venta } from "@/data/venta";
+import { track } from "@/lib/analytics";
 import Dialogo from "../Dialogo";
 import ImagenVenta from "./ImagenVenta";
 
@@ -81,7 +82,14 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
     return () => window.clearTimeout(timer);
   }, [indice, detener, encima, oculto, cambiar, ampliada]);
 
+  function cambiarManual(nuevo: number) {
+    const siguiente = (nuevo + total) % total;
+    track("view_gallery_image", { proyecto: p.slug, indice: siguiente + 1 });
+    cambiar(nuevo);
+  }
+
   function abrirVisor() {
+    track("open_gallery", { proyecto: p.slug, indice: indice + 1 });
     setVideoAbierto(false);
     setEncima(false);
     setAmpliada(true);
@@ -117,7 +125,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
           if (!activo || !["ArrowLeft", "ArrowRight"].includes(e.key)) return;
           e.preventDefault();
           e.stopPropagation();
-          cambiar(indice + (e.key === "ArrowLeft" ? -1 : 1));
+          cambiarManual(indice + (e.key === "ArrowLeft" ? -1 : 1));
           setPausado(true);
         }}
       >
@@ -185,14 +193,14 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
           </div>
           <button
             className="carrusel-flecha anterior"
-            onClick={() => cambiar(indice - 1)}
+            onClick={() => cambiarManual(indice - 1)}
             aria-label="Medio anterior"
           >
             <Flecha anterior />
           </button>
           <button
             className="carrusel-flecha siguiente"
-            onClick={() => cambiar(indice + 1)}
+            onClick={() => cambiarManual(indice + 1)}
             aria-label="Medio siguiente"
           >
             <Flecha />
@@ -236,7 +244,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
           <button
             key={m.espacio}
             onClick={() => {
-              cambiar(i);
+              cambiarManual(i);
               setPausado(true);
             }}
             aria-pressed={indice === i}
@@ -250,7 +258,7 @@ export default function GaleriaCasa({ p }: { p: Proyecto }) {
         {tieneRecorrido && <button
           className="miniatura miniatura-video"
           onClick={() => {
-            cambiar(datos.imagenes.length);
+            cambiarManual(datos.imagenes.length);
             setPausado(true);
           }}
           aria-pressed={indice === datos.imagenes.length}

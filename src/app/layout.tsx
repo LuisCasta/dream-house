@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cinzel, Geist, Playfair_Display } from "next/font/google";
-import Atribucion from "@/components/Atribucion";
+import MetricasClarity from "@/components/MetricasClarity";
 import { SITIO } from "@/config/sitio";
 import "./globals.css";
 
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geist.variable} ${playfair.variable} ${cinzel.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col font-sans">
-        <Atribucion />
+        <MetricasClarity />
         {children}
       </body>
     </html>

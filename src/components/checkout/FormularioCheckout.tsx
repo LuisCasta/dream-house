@@ -94,7 +94,7 @@ export default function FormularioCheckout() {
               reales.
             </p>
           </div>
-          <form
+          <form data-clarity-mask="true"
             noValidate
             onSubmit={enviar}
             className="formulario"

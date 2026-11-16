@@ -11,6 +11,7 @@ import BannerColaboracion from "./BannerColaboracion";
 import InformacionCatalogo from "./InformacionCatalogo";
 import SeleccionGuardada from "../SeleccionGuardada";
 import AvisoLanzamiento from "../AvisoLanzamiento";
+import { track } from "@/lib/analytics";
 
 export default function Catalogo({
   inicial,
@@ -119,7 +120,10 @@ export default function Catalogo({
           <select
             id="filtro-terreno"
             value={medida}
-            onChange={(e) => setMedida(e.target.value)}
+            onChange={(e) => {
+              setMedida(e.target.value);
+              track("select_lot_size", { medida: e.target.value || "todas" });
+            }}
           >
             <option value="">Todas las medidas</option>
             {MEDIDAS.filter((m) => PROYECTOS.some((p) => p.estado === "listo" && slugMedida(p.terreno) === m.slug) || m.slug === medidaInicial).map((m) => (

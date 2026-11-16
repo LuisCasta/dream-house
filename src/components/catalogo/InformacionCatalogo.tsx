@@ -1,7 +1,8 @@
 "use client";
 import { useId, useState } from "react";
 import Link from "next/link";
-import { ARQUITECTO, CONTACTO } from "@/config/sitio";
+import { CONTACTO } from "@/config/sitio";
+import { LEGAL } from "@/config/legal";
 import {
   ADAPTACION_CATALOGO,
   ATENCION_CATALOGO,
@@ -95,16 +96,14 @@ export default function InformacionCatalogo() {
               {ADAPTACION_CATALOGO.enlace}
             </ContactoProyecto>
             <p className="aclaracion-adaptacion">
-              Cotización separada.
-              {CONTACTO.pendiente &&
-                " En esta demo puedes preparar la consulta; el canal de contacto aún no está habilitado."}
+              Cotización separada. Atención por WhatsApp al {CONTACTO.whatsappVisible}.
             </p>
           </section>
-          {!ARQUITECTO.pendiente && (
+          {LEGAL.responsable && (
             <div className="equipo-catalogo">
-              <p>Proyecto desarrollado por {ARQUITECTO.nombre}</p>
-              <Link href="/contacto/" className="enlace">
-                Conoce al equipo ↗
+              <p>Dream House · {LEGAL.responsable}</p>
+              <Link href="/nosotros/" className="enlace">
+                Conoce Dream House ↗
               </Link>
             </div>
           )}

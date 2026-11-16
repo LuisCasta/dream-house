@@ -1,10 +1,14 @@
-// Eventos de conversión y atribución por contenido (UTM).
-//
-// CONECTAR PROVEEDOR: los eventos se envían a `window.dataLayer`, que es lo que
-// lee Google Tag Manager. Desde GTM se pueden reenviar a GA4, Meta Pixel y TikTok
-// Pixel sin tocar este código. Si se prefiere enviarlos directo, hacerlo en `enviar()`.
+// Analítica opcional: eventos sin datos personales, enviados a Clarity tras aceptar.
+import { leerConsentimiento } from "./consentimiento";
+import { parametrosSeguros, registrarClarity } from "./clarity";
 
 export type Evento =
+  | "page_view"
+  | "view_gallery_image"
+  | "open_gallery"
+  | "save_project"
+  | "remove_saved_project"
+  | "prepare_modification_request"
   | "launch_notification_interest"
   | "demo_view_project"
   | "demo_begin_checkout"
@@ -61,16 +65,17 @@ function guardar(clave: string, a: Atribucion) {
 
 // Se llama una vez por carga de página (ver <Atribucion /> en el layout raíz).
 export function capturarAtribucion() {
+  if (typeof window === "undefined" || leerConsentimiento() !== "aceptado") return;
   const params = new URLSearchParams(location.search);
   const a: Atribucion = {};
   for (const k of UTM) {
     const v = params.get(k);
-    if (v) a[k] = v;
+    if (v && /^[a-z0-9_.-]{1,100}$/i.test(v)) a[k] = v;
   }
   const referrerExterno =
     document.referrer && !document.referrer.startsWith(location.origin);
   if (!a.utm_source && !referrerExterno) return;
-  a.referrer = document.referrer || undefined;
+  try { a.referrer = document.referrer ? new URL(document.referrer).origin : undefined; } catch { /* Origen inválido. */ }
   a.landing = location.pathname;
   a.fecha = new Date().toISOString();
   if (!leer(CLAVE_PRIMER)) guardar(CLAVE_PRIMER, a);
@@ -95,12 +100,13 @@ export function vieneDeRedes(params: URLSearchParams) {
 function enviar(evento: Evento, datos: Record<string, unknown>) {
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push({ event: evento, ...datos });
+  if (!evento.startsWith("demo_")) registrarClarity(evento, datos);
   if (process.env.NODE_ENV !== "production")
     console.info("[analytics]", evento, datos);
 }
 
 export function track(evento: Evento, params: Record<string, unknown> = {}) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || leerConsentimiento() !== "aceptado") return;
   if (evento.startsWith("demo_")) {
     enviar(evento, {
       proyecto: params.proyecto ?? null,
@@ -111,7 +117,7 @@ export function track(evento: Evento, params: Record<string, unknown> = {}) {
   }
   const { ultimo_toque, primer_toque } = obtenerAtribucion();
   enviar(evento, {
-    ...params,
+    ...parametrosSeguros(params),
     atribucion_ultimo: ultimo_toque,
     atribucion_primero: primer_toque,
   });
