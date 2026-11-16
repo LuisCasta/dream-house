@@ -7,11 +7,12 @@ import { track } from "@/lib/analytics";
 
 export default function FormularioAdaptar() {
   const params = useSearchParams();
+  const proyectosListos = PROYECTOS.filter((p) => p.estado === "listo");
   const [mensajePreparado, setMensajePreparado] = useState("");
   const enviar = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const d = new FormData(e.currentTarget);
-    const p = PROYECTOS.find((x) => x.slug === d.get("proyecto"));
+    const p = proyectosListos.find((x) => x.slug === d.get("proyecto"));
     const mensaje = [
       "Hola, quiero cotizar una adaptación o un proyecto personalizado.",
       p ? `Proyecto: ${p.nombre}` : "Aún no elijo proyecto.",
@@ -20,7 +21,7 @@ export default function FormularioAdaptar() {
     ]
       .filter(Boolean)
       .join("\n");
-    track("demo_contact", { proyecto: p?.slug ?? null });
+    track("request_modification", { proyecto: p?.slug ?? null });
     setMensajePreparado(mensaje);
   };
   return (
@@ -29,11 +30,11 @@ export default function FormularioAdaptar() {
         Proyecto
         <select
           name="proyecto"
-          defaultValue={params.get("proyecto") ?? ""}
+          defaultValue={proyectosListos.some((p) => p.slug === params.get("proyecto")) ? params.get("proyecto")! : ""}
           className="campo mt-2"
         >
           <option value="">Proyecto personalizado</option>
-          {PROYECTOS.map((p) => (
+          {proyectosListos.map((p) => (
             <option key={p.slug} value={p.slug}>
               {p.nombre}
             </option>
@@ -54,10 +55,7 @@ export default function FormularioAdaptar() {
         <textarea name="mensaje" rows={3} className="campo mt-2" />
       </label>
       <p className="nota">
-        Adaptación con cotización separada.{" "}
-        {CONTACTO.pendiente
-          ? "Canal de contacto por confirmar. Puedes preparar tu mensaje; no se enviará."
-          : "Revisa el mensaje antes de abrir WhatsApp."}
+        Adaptación con cotización separada. Revisa el mensaje antes de abrir WhatsApp.
       </p>
       <button type="submit" className="boton w-full">
         Preparar consulta
@@ -65,13 +63,7 @@ export default function FormularioAdaptar() {
       {mensajePreparado && (
         <div className="aviso" role="status">
           <p className="whitespace-pre-line">{mensajePreparado}</p>
-          {CONTACTO.pendiente ? (
-            <p className="font-medium mt-4">
-              Consulta preparada. No se envió: falta confirmar el contacto del
-              negocio.
-            </p>
-          ) : (
-            <a
+          <a
               className="enlace inline-block mt-4"
               href={enlaceWhatsApp(mensajePreparado)}
               target="_blank"
@@ -79,7 +71,7 @@ export default function FormularioAdaptar() {
             >
               Continuar en WhatsApp →
             </a>
-          )}
+          <p className="nota mt-3">Se abrirá WhatsApp para {CONTACTO.whatsappVisible}. Envía el mensaje para completar la consulta.</p>
         </div>
       )}
     </form>

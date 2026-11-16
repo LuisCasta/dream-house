@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { obtenerProyecto } from "@/data/proyectos";
-import { RECOMENDADOS } from "@/data/recomendados";
 import ImagenVenta from "@/components/proyecto/ImagenVenta";
 export const metadata: Metadata = {
-  title: "Qué es Dream House",
+  title: "Conoce Dream House",
   description:
-    "Ideas para tu hogar, proyectos de casas y una forma sencilla de encontrar por dónde empezar.",
+    "Conoce Dream House y Casa Brisa: planos arquitectónicos, renders de sus espacios y atención para consultar un proyecto personalizado.",
 };
 
 export default function Nosotros() {
@@ -26,9 +25,10 @@ export default function Nosotros() {
             dar el siguiente paso.
           </p>
           <p className="nosotros-descripcion">
-            En Dream House reunimos ideas de casas, fachadas e interiores.
-            Puedes explorar cada propuesta, conocer sus espacios y consultar qué
-            incluye su paquete de planos, a tu ritmo.
+            En Dream House convertimos ideas de vivienda en proyectos que
+            puedes explorar a través de planos y renders. Casa Brisa es nuestro
+            primer proyecto digital: una casa de una planta con dos recámaras,
+            un baño y 72 m² construidos, para un terreno de 7 × 15 m.
           </p>
           <Link href="/planos/" className="boton">
             Encuentra tu casa <span aria-hidden>→</span>
@@ -37,7 +37,7 @@ export default function Nosotros() {
         <figure className="nosotros-imagen">
           <ImagenVenta p={p} prioridad />
           <figcaption>
-            Una idea para empezar · Ilustración provisional
+            Casa Brisa · Render de fachada del proyecto
           </figcaption>
         </figure>
       </section>
@@ -53,51 +53,20 @@ export default function Nosotros() {
           ¿Buscas algo a tu medida? Platiquemos →
         </Link>
       </section>
-      <section
-        className="nosotros-recomendados"
-        aria-labelledby="titulo-recomendados"
-      >
-        <div>
-          <p className="sobrelinea">DETALLES QUE HACEN HOGAR</p>
-          <h2 id="titulo-recomendados">Ideas para darle vida a tu casa.</h2>
-          <p>
-            También queremos acompañarte al elegir los detalles de tus espacios.
-          </p>
+      <section className="nosotros-espacios" aria-labelledby="titulo-espacios">
+        <p className="sobrelinea">LOS ESPACIOS DE CASA BRISA</p>
+        <h2 id="titulo-espacios">Luz, materiales cálidos y vistas al jardín.</h2>
+        <div className="nosotros-espacios-grid">
+          {p.renders.slice(1).map((render, i) => (
+            <figure key={render.espacio}>
+              <div className="nosotros-render"><ImagenVenta p={p} indice={i + 1} /></div>
+              <figcaption>{render.titulo} · Casa Brisa</figcaption>
+            </figure>
+          ))}
         </div>
-        {RECOMENDADOS.length ? (
-          <>
-            <p className="aviso mt-6">
-              Estos enlaces son de afiliado de Mercado Libre. Dream House puede
-              recibir una comisión si compras a través de ellos.
-            </p>
-            <div className="recomendados-grid">
-              {RECOMENDADOS.map((r) => (
-                <article key={r.id} className="panel">
-                  <h3>{r.nombre}</h3>
-                  <p>{r.descripcion}</p>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="sponsored noopener noreferrer"
-                    className="enlace"
-                  >
-                    Ver en Mercado Libre ↗
-                  </a>
-                </article>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="proximamente">
-            Próximamente, una selección de productos para tu hogar en Mercado
-            Libre.
-          </p>
-        )}
+        <p className="text-gris mt-5">El paquete reúne planos arquitectónicos y renders de las áreas del proyecto. Consulta la ficha para conocer su distribución y los documentos incluidos.</p>
+        <Link href="/brisa/" className="enlace inline-block mt-5">Conocer Casa Brisa →</Link>
       </section>
-      <p className="nota nosotros-demo">
-        Estás viendo una versión de demostración. Los proyectos, imágenes,
-        paquetes y precios todavía son de ejemplo.
-      </p>
     </div>
   );
 }

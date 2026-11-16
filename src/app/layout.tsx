@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s · Dream House",
   },
   description:
-    "Explora casas y proyectos arquitectónicos de Dream House. Versión de demostración con imágenes, paquetes y precios de ejemplo.",
+    "Conoce los proyectos arquitectónicos de Dream House, explora los planos y renders de Casa Brisa y consulta una adaptación para tu terreno.",
   openGraph: {
     siteName: SITIO.nombreCompleto,
     locale: "es_MX",

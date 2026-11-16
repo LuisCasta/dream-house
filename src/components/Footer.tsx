@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Logo from "./Logo";
 import { CONTACTO, REDES, SITIO, enlaceWhatsApp } from "@/config/sitio";
-import { COMPRA_REAL_HABILITADA } from "@/config/compra";
 
 export default function Footer() {
   const redesConfirmadas = REDES.filter((r) => !r.pendiente);
@@ -51,9 +50,7 @@ export default function Footer() {
             © {new Date().getFullYear()} {SITIO.nombre}
           </p>
           <p>
-            {COMPRA_REAL_HABILITADA
-              ? "Proyectos arquitectónicos · Entrega digital"
-              : "Versión de demostración · Sin cobros reales"}
+            Proyectos arquitectónicos · Atención por WhatsApp y correo
           </p>
         </div>
       </div>

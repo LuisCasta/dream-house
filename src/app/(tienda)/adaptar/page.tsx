@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SERVICIOS } from "@/data/contenido";
+import Image from "next/image";
+import { CONTACTO } from "@/config/sitio";
+import { recurso } from "@/lib/rutas";
 import FormularioAdaptar from "@/components/FormularioAdaptar";
-import { Contenedor, Eyebrow, Pendiente, Titulo } from "@/components/ui";
+import { Contenedor, Eyebrow, Titulo } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Adaptar un proyecto a tu terreno" };
+export const metadata: Metadata = {
+  title: "Proyecto personalizado",
+  description: "Comparte las medidas de tu terreno y los cambios que necesitas. Consulta una adaptación o un proyecto personalizado por WhatsApp con Dream House.",
+};
 
 export default function Adaptar() {
   return (
@@ -17,8 +23,12 @@ export default function Adaptar() {
           </Titulo>
           <p className="mt-4 max-w-lg text-lg leading-relaxed text-gris">
             Si tu terreno tiene otra medida, está en esquina o quieres cambiar
-            algo de la casa, podemos ayudarte.
+            algo de la casa, cuéntanos qué necesitas para revisar tu solicitud.
           </p>
+          <figure className="mt-7">
+            <Image src={recurso("/renders/brisa/sala-comedor.webp")} alt="Sala, comedor y cocina de Casa Brisa junto al jardín lateral" width={1672} height={941} className="w-full rounded-2xl" sizes="(min-width:1024px) 55vw, 100vw" />
+            <figcaption className="nota mt-2">Casa Brisa · Render del área social</figcaption>
+          </figure>
           <ul className="mt-10 grid gap-3 sm:grid-cols-2">
             {SERVICIOS.map((s) => (
               <li
@@ -30,8 +40,11 @@ export default function Adaptar() {
               </li>
             ))}
           </ul>
-          <p className="mt-4">
-            <Pendiente>Servicios, alcances y precios por confirmar</Pendiente>
+          <p className="nota mt-4">
+            Cada solicitud se revisa según el terreno y los cambios propuestos.
+            La adaptación y el proyecto personalizado se cotizan por separado
+            del paquete de planos. El alcance, el costo y el plazo se acuerdan
+            antes de iniciar el trabajo.
           </p>
         </div>
         <div className="lg:pt-8">
@@ -40,14 +53,15 @@ export default function Adaptar() {
               Cuéntanos de tu terreno
             </h2>
             <p className="mt-1 text-sm text-gris">
-              Prepara una consulta. Cotización y canal de contacto por
-              confirmar.
+              Indica las medidas y los cambios que buscas. Podrás revisar tu
+              mensaje y enviarlo por WhatsApp para solicitar una cotización.
             </p>
             <div className="mt-6">
               <Suspense fallback={null}>
                 <FormularioAdaptar />
               </Suspense>
             </div>
+            <p className="nota mt-5">También puedes escribir a <a className="enlace break-all" href={`mailto:${CONTACTO.email}`}>{CONTACTO.email}</a>.</p>
           </div>
         </div>
       </div>

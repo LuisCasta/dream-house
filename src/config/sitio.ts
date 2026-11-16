@@ -36,7 +36,7 @@ export const ARQUITECTO = {
 
 export const DATOS_FISCALES = {
   pendiente: true,
-  razonSocial: "Razón social por confirmar",
+  razonSocial: "KLARO SERVICIOS DE MANTENIMIENTO Y CONSTRUCCIÓN",
   rfc: "RFC por confirmar",
 };
 
