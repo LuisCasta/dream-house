@@ -104,7 +104,7 @@ export type Paleta = { muro: string; acento: string; madera: string };
 
 export type Proyecto = {
   estado: "listo" | "proximamente";
-  slug: string; // también es la URL corta: dreamhouse.mx/brisa
+  slug: string; // también es la URL corta: storedreamhouse.com/brisa
   codigo: string; // código interno, siempre secundario
   nombre: string;
   lema: string;

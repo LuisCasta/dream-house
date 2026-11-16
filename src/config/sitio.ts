@@ -5,8 +5,8 @@
 export const SITIO = {
   nombre: "Dream House",
   nombreCompleto: "Dream House Planos",
-  dominio: "dreamhouse.mx", // PENDIENTE: confirmar dominio
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://dreamhouse.mx",
+  dominio: "storedreamhouse.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://storedreamhouse.com",
   moneda: "MXN",
 };
 
