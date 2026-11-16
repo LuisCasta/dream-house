@@ -41,7 +41,7 @@ export const ENTREGABLES: Record<string, Entregable> = {
   },
 };
 
-// Contenido verificado del PDF de Casa Brisa; no se añade al paquete genérico.
+// Planos revisados y renders incluidos en el paquete de Casa Brisa.
 const ENTREGABLES_BRISA: Record<string, Entregable> = {
   "brisa-planta": {
     id: "brisa-planta",
@@ -72,6 +72,12 @@ const ENTREGABLES_BRISA: Record<string, Entregable> = {
     nombre: "Render de fachada",
     descripcion: "Imagen de referencia de la fachada incluida en la portada del documento de seis páginas.",
     formato: "PDF",
+  },
+  "brisa-renders": {
+    id: "brisa-renders",
+    nombre: "Renders de las áreas del proyecto",
+    descripcion: "Imágenes de la fachada y de las áreas interiores del proyecto, entregadas junto con los planos en PDF.",
+    formato: "Imágenes",
   },
 };
 
@@ -170,7 +176,7 @@ export const PROYECTOS: Proyecto[] = [
       id: "completo",
       nombre: "Proyecto completo",
       precio: 2490,
-      entregables: ["brisa-planta", "brisa-fachada", "brisa-cortes", "brisa-cimentacion", "brisa-portada"],
+      entregables: ["brisa-planta", "brisa-fachada", "brisa-cortes", "brisa-cimentacion", "brisa-portada", "brisa-renders"],
       linkPago: "https://buy.stripe.com/test_dRmbJ03IZ54629n4kQ7IY00",
     }],
     renders: [

@@ -19,4 +19,6 @@ Fuente: `PLANOS ARQUITECTÓNICOS.pdf`, seis páginas, planos fechados en octubre
 
 El documento revisado no contiene renders interiores, archivos JPG independientes, guía de acabados, archivo DWG, proyectos de instalaciones ni una memoria de cálculo estructural. La planta de cimentación no se anuncia como proyecto estructural completo. Los cuatro renders proporcionados por separado se usan en la galería pública.
 
+El paquete de entrega también incluye las imágenes de los renders de fachada y de las áreas interiores, según lo confirmado por el propietario. Este entregable es adicional al contenido del PDF y se mantiene en «Qué recibes».
+
 El PDF de venta permanece fuera de `public`. El precio y el enlace de Stripe siguen siendo de prueba; esta actualización de contenido no habilita cobros ni entrega automática.

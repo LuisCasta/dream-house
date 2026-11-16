@@ -27,7 +27,7 @@ export default function ProyectoDestacado({ p, abrir }: {
           <li>{p.recamaras} recámaras · {banos(p.banos)} {p.banos === 1 ? "baño" : "baños"}</li>
           <li>{p.plantas} {p.plantas === 1 ? "planta" : "plantas"}</li>
         </ul>
-        <p className="nota">Planos arquitectónicos acotados, fachada, cortes, planta de cimentación y render de fachada en PDF.</p>
+        <p className="nota">Planos arquitectónicos acotados, fachada, cortes y planta de cimentación en PDF, más imágenes de los renders de fachada e interiores.</p>
         <div className="destacado-acciones">
           <Link href={`/${p.slug}/`} onClick={(e) => abrir(e, p.slug)} className="boton">Conocer {p.nombre} <span aria-hidden>→</span></Link>
           <div><strong>{precio(p.paquetes[0].precio)}</strong><p className="nota">Precio de ejemplo</p></div>

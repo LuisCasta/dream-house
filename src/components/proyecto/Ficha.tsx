@@ -100,7 +100,7 @@ export default function Ficha({
               : "Datos ilustrativos por confirmar. La medida no garantiza compatibilidad con tu terreno."}
           </p>
           <h2 className="font-display text-2xl mt-6">Qué recibes</h2>
-          {p.documentacionVerificada && <p className="nota mt-2">Documento PDF de seis páginas: portada y cinco láminas técnicas.</p>}
+          {p.documentacionVerificada && <p className="nota mt-2">Documento PDF de seis páginas: portada y cinco láminas técnicas, más las imágenes de los renders de las áreas del proyecto.</p>}
           <ul className="entregables">
             {datos.entregables.map((e) => (
               <li key={e.id}>
