@@ -171,13 +171,12 @@ export const PROYECTOS: Proyecto[] = [
     recamaras: 2,
     banos: 1,
     cochera: 0,
-    // TODO: link de PRUEBA (test_). Cambiar por el link de producción antes de vender.
     paquetes: [{
       id: "completo",
       nombre: "Proyecto completo",
       precio: 2490,
       entregables: ["brisa-planta", "brisa-fachada", "brisa-cortes", "brisa-cimentacion", "brisa-portada", "brisa-renders"],
-      linkPago: "https://buy.stripe.com/test_dRmbJ03IZ54629n4kQ7IY00",
+      linkPago: "https://buy.stripe.com/00w14o6ExaNyecv5NYbbG00",
     }],
     renders: [
       {
