@@ -174,7 +174,7 @@ export const PROYECTOS: Proyecto[] = [
     paquetes: [{
       id: "completo",
       nombre: "Proyecto completo",
-      precio: 2490,
+      precio: 549,
       entregables: ["brisa-planta", "brisa-fachada", "brisa-cortes", "brisa-cimentacion", "brisa-portada", "brisa-renders"],
       linkPago: "https://buy.stripe.com/00w14o6ExaNyecv5NYbbG00",
     }],
