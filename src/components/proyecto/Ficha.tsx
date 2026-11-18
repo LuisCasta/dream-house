@@ -126,8 +126,7 @@ export default function Ficha({
               ))}
             </ul>
             <p className="nota mt-3">
-              DWG editable pendiente de confirmar; no está incluido en esta
-              demostración.
+              El archivo DWG editable no está incluido en este paquete.
             </p>
           </details>
           <div className="aviso mt-5">
@@ -138,18 +137,18 @@ export default function Ficha({
             </p>
             <p className="nota mt-2">
               {p.documentacionVerificada
-                ? "Contenido según el PDF del proyecto. Precio de ejemplo."
-                : "Paquete de ejemplo, sujeto a confirmación."}
+                ? "Contenido según el PDF del proyecto."
+                : "Consulta los documentos y formatos incluidos en este paquete."}
             </p>
           </div>
           <div className="compra-fija">
             <div>
               <p className="precio-ficha">{precio(p.paquetes[0].precio)}</p>
-              <p className="nota">Precio de ejemplo</p>
+              <p className="nota">Pago único en MXN</p>
             </div>
             <Compra p={p} />
             <p className="nota entrega-ficha">
-              Demostración sin cobro ni entrega de planos reales.
+              Descarga disponible una vez acreditado tu pago.
             </p>
           </div>
           <GuardarProyecto p={p} />

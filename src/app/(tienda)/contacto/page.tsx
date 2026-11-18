@@ -17,8 +17,7 @@ export default function Contacto() {
               Canales de contacto por confirmar
             </h2>
             <p className="text-gris mt-3">
-              Esta versión es una demostración. El WhatsApp y correo del negocio
-              todavía no están confirmados.
+              Estamos actualizando nuestros canales de atención.
             </p>
             <Link href="/adaptar" className="enlace inline-block mt-5">
               Preparar una consulta de adaptación →

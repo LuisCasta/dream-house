@@ -1,6 +1,6 @@
 import { entregablesDe, type Proyecto, type Espacio } from "./proyectos";
 
-// Configuración editorial centralizada. Ningún dato comercial del catálogo está aprobado aún.
+// Configuración editorial centralizada del catálogo.
 // Reemplazar src por rutas de public y provisional por false al recibir los activos reales.
 export const EXCLUSIONES = [
   "Cálculo estructural",
@@ -21,8 +21,8 @@ export function venta(p: Proyecto) {
     : espacios.map((espacio) => p.renders.find((render) => render.espacio === espacio)!);
   return {
     moneda: "MXN",
-    demo: true,
-    disponibilidad: p.estado === "proximamente" ? "proximamente" as const : "demostracion" as const,
+    demo: false,
+    disponibilidad: p.estado === "proximamente" ? "proximamente" as const : "disponible" as const,
     datosConfirmados: Boolean(p.documentacionVerificada),
     imagenes: imagenes.map((render) => ({
       espacio: render.espacio,

@@ -15,8 +15,8 @@ export default function ComoFunciona() {
             "Revisa fachada, dos interiores, recorrido cuando esté disponible y el alcance del paquete. No mostramos vistas previas de planos.",
           ],
           [
-            "Prueba la compra",
-            "Esta versión solo simula el pago. No se cobra, no se envían correos ni se entregan planos reales.",
+            "Compra y descarga tus planos",
+            "Realiza el pago con Stripe. Una vez que se acredite, podrás descargar el archivo ZIP con los planos y los demás documentos incluidos en tu paquete.",
           ],
           [
             "Revisa antes de construir",

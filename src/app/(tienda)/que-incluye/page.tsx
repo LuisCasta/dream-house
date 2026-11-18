@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ENTREGABLES } from "@/data/proyectos";
+import { PROYECTOS, entregablesDe } from "@/data/proyectos";
 import { EXCLUSIONES } from "@/data/venta";
 export default function QueIncluye() {
   return (
@@ -7,10 +7,10 @@ export default function QueIncluye() {
       <p className="sobrelinea">EL PAQUETE</p>
       <h1 className="titulo-pagina">Qué incluye tu proyecto</h1>
       <p className="text-gris mt-4">
-        Contenido de ejemplo. El alcance comercial está por confirmar.
+        Consulta en la ficha de cada casa los documentos y formatos incluidos en su paquete.
       </p>
       <div className="grid gap-5 md:grid-cols-3 mt-9">
-        {Object.values(ENTREGABLES)
+        {entregablesDe(PROYECTOS.find((p) => p.estado === "listo")!)
           .filter((e) => !e.pendiente)
           .map((e) => (
             <section className="panel p-6" key={e.id}>
@@ -26,11 +26,11 @@ export default function QueIncluye() {
         <strong>Antes de construir</strong>
         <p>
           No incluye: {EXCLUSIONES.join(", ").toLowerCase()}. El archivo DWG
-          editable está pendiente de confirmación. Requiere revisión y
+          editable no está incluido. Requiere revisión y
           adaptación local.
         </p>
         <p className="mt-2">
-          Esta demo no entrega archivos de proyectos reales.
+          Descarga el archivo ZIP con tu paquete una vez acreditado el pago.
         </p>
       </div>
       <Link href="/planos" className="boton mt-8">

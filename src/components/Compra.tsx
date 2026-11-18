@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { checkoutUrl } from "@/lib/rutas";
 import { track } from "@/lib/analytics";
 import { linkPago, type Proyecto } from "@/data/proyectos";
 import { guardarSeleccion } from "@/lib/seleccion";
@@ -29,15 +28,8 @@ export default function Compra({
       </a>
     );
   return (
-    <Link
-      href={checkoutUrl(p.slug)}
-      className={`boton ${className}`}
-      onClick={() => {
-        guardarSeleccion(p.slug);
-        track("demo_begin_checkout", { proyecto: p.slug });
-      }}
-    >
-      Comprar planos <span aria-hidden>→</span>
+    <Link href="/contacto/" className={`boton ${className}`}>
+      Consultar compra <span aria-hidden>→</span>
     </Link>
   );
 }

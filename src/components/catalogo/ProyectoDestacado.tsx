@@ -30,7 +30,7 @@ export default function ProyectoDestacado({ p, abrir }: {
         <p className="nota">Planos arquitectónicos acotados, fachada, cortes y planta de cimentación en PDF, más imágenes de los renders de fachada e interiores.</p>
         <div className="destacado-acciones">
           <Link href={`/${p.slug}/`} onClick={(e) => abrir(e, p.slug)} className="boton">Conocer {p.nombre} <span aria-hidden>→</span></Link>
-          <div><strong>{precio(p.paquetes[0].precio)}</strong><p className="nota">Precio de ejemplo</p></div>
+          <div><strong>{precio(p.paquetes[0].precio)}</strong><p className="nota">Pago único en MXN</p></div>
           <Compra p={p} className="destacado-comprar" />
         </div>
       </div>

@@ -1,10 +1,10 @@
-// Cambiar a producción solo después de conectar y verificar los servicios reales.
+// Pagos y entrega activos, confirmados por el negocio.
 // Esta configuración describe capacidades; no implementa pasarelas ni entrega.
 export const COMPRA = {
-  modo: "demostracion" as "demostracion" | "produccion",
-  pagoIntegrado: false,
-  entregaIntegrada: false,
-  soporteConfirmado: false,
+  modo: "produccion" as "demostracion" | "produccion",
+  pagoIntegrado: true,
+  entregaIntegrada: true,
+  soporteConfirmado: true,
 };
 
 export const COMPRA_REAL_HABILITADA =

@@ -149,10 +149,10 @@ function recorrido(nombre: string, plantas: number, extra: Partial<Record<Espaci
 }
 
 // ─────────────────────────────────────────────────────────────
-// Proyectos de ejemplo — nombres, precios y medidas POR CONFIRMAR
+// Catálogo de proyectos disponibles y próximos lanzamientos
 // ─────────────────────────────────────────────────────────────
 
-export const DATOS_DE_EJEMPLO = true;
+export const DATOS_DE_EJEMPLO = false;
 
 export const PROYECTOS: Proyecto[] = [
   {
