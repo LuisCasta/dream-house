@@ -20,6 +20,11 @@ const cinzel = Cinzel({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITIO.url),
+  verification: {
+    other: {
+      "p:domain_verify": "6b32aa93e20ddddb9c622cfa9418600d",
+    },
+  },
   title: {
     default: "Dream House · Los planos de la casa que viste",
     template: "%s · Dream House",
