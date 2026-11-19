@@ -29,9 +29,10 @@ export default function Ayuda() {
         <details>
           <summary>¿Puedo comprar y descargar planos ahora?</summary>
           <p>
-            La compra y la descarga automática aún no están habilitadas.
-            Puedes consultar los planos y renders incluidos en Casa Brisa y
-            contactarnos para resolver tus dudas antes de realizar una compra.
+            Sí, la compra y la descarga automática de los planos están habilitadas.
+            Realiza tu pago con Stripe y, una vez que se acredite, podrás descargar
+            el archivo ZIP con los planos, renders y demás documentos incluidos en
+            el paquete de tu proyecto.
           </p>
         </details>
         <details>
